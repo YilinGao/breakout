@@ -1,0 +1,9 @@
+#Plan for the Breakout game
+Yilin Gao (yg95)
+
+*at least one variant of Breakout that you thought was interesting and what was interesting about it
+*a general description of the different levels you intend to build (perhaps with "pictures" of the block configurations)
+*several different blocks you want to create
+*several different power ups you want to create
+*several different cheat keys you are planning to include
+*something extra you intend to add and why you think it is a substantial addition
