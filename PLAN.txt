@@ -1,9 +1,74 @@
-#Plan for the Breakout game
+Plan for the Breakout game
 Yilin Gao (yg95)
 
-*at least one variant of Breakout that you thought was interesting and what was interesting about it
-*a general description of the different levels you intend to build (perhaps with "pictures" of the block configurations)
-*several different blocks you want to create
-*several different power ups you want to create
-*several different cheat keys you are planning to include
-*something extra you intend to add and why you think it is a substantial addition
+Among current variants of Breakout, I'm pretty interested in Circus. Because the seesaw enables different jumping directions and heights, which requires a lot of estimation and calculation for the player. And the flowing block strips are challenging, because it is likely to hit a vacancy and achieve nothing with one jump.
+Moreover, Centipong is very interesting. Because as more centipedes appear, there will be more balls on the screen. The picture with many moving balls looks cool, and it requires the player great agility to catch at least one ball.
+
+The variant of Breakout that I have designed is composed of 3 different levels, each with different layouts and settings.
+The basic playing instruction is the same as the original Breakout game, to use the "left" and "right" keys on the keyboard to control the paddle, so that the ball won't fall to the bottom of the screen.
+
+*Levels:
+1. Level 1: 
+	All blocks are configured as a trapezoid, with 5 levels of blocks, and there will be more blocks in levels closer to the bottom.
+	[pic]
+	The paddle speed in Level 1 will be the fastest among three levels.
+2. Level 2:
+	All blocks are configured as 4 separate static strips, each from one side of the screen to the other. There will be certain distance between any two adjacent strips. Blocks in each strip are contiguous.
+	[pic]
+	The paddle speed in Level 2 will be 3/4 of that in Level 1.
+3. Level 3:
+	All blocks are configured as 3 separate moving strips, each consisting of 50 blocks. There will be certain distance between any two adjacent strips, and any two adjacent blocks in one strip.
+	The top and bottom strip moves from left to right, and the medium one moves in the opposite direction. Currently they are designed to move with a same constant speed.
+	[pic]
+	The paddle speed in Level 3 will be 2/3 of that in Level 1.
+For all levels, the vertical coordinate of the paddle remains the same. The initial horizontal position of the paddle is the medium of its vertical position. 
+For all levels, the ball is located on the medium position of the paddle initially.
+For all levels, the ball speed is same without power-ups.
+
+*Blocks:
+1. Block 1:
+	Normal block. The block gets cracked after 1 hit, and 100 points is added to the player's total score.
+	This block is marked as blue.
+2. Block 2:
+	The block gets cracked after 2 hits, with 100 points for the first hit, and 200 points for the second.
+	This block is marked as green. Its color will be faded to light green after the first hit.
+3. Block 3:
+	The block gets cracked after 3 hits, with 100 points for the first hit, 200 points for the second, and 300 points for the third.
+	This block is marked as red. Its color will be faded to different levels of light red after the first and second hit.
+For all blocks, there is a probability of 0.2 to drop a random power-up after each hit. 
+
+*Paddle functions:
+1.  The paddle can make the ball bounce differently depending on where it hits (i.e., the middle third cause the ball to bounce normally, the left and right thirds cause the ball to bounce back in the direction it came)
+	This function lasts during the game.
+2.	The paddle can warp from one side of the screen to the other side when it hits the wall.
+3.	The paddle can catch the next hit ball for 3 seconds and move together with it after it catches the power-up "P".
+
+*Power-ups:
+1. Power-up "S":
+	The power-up "S" can speed up the ball by 3/2 once it is caught by the paddle. The speed-up effect lasts for 10 seconds.
+2. Power-up "M":
+	The power-up "M" can multiply the ball into 3 totally same balls once it is caught by the paddle.
+3. Power-up "P":
+	The power-up "P" can enable the paddle to catch the ball for 3 seconds and move together when the ball hits the paddle for the first time after the power-up is caught by the paddle.
+4. Power-up "L":
+	The power-up "L" can increase the number of lives for the player by 1.
+
+*Cheat keys:
+1. "R":
+	When the player presses "R" during the game, everything in the game will be reset to the initial status of level 1.
+2. The space key:
+	When the player presses the space key during the game, the paddle will be reset to its starting position.
+3. Numbers 1, 2, 3:
+	When the player presses one of three numbers during the game, the player can escape the current level, and go to the assigned level with current scores.
+
+*Status display:
+1. Current score:
+	Current score will be displayed at the upper left corner of the screen.
+2. Current level:
+	Current level will be displayed at the upper right corner of the screen.
+3. Current lives:
+	Current lives will be displayed at the lower left corner of the screen.
+
+*Splash screen:
+At the beginning of the game, there will be related information shown on the screen, including the name of the game, the author, and basic playing instructions.
+The information won't disappear until the player presses any key or click the mouse.
