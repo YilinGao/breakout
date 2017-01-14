@@ -10,16 +10,34 @@ The basic playing instruction is the same as the original Breakout game, to use 
 *Levels:
 1. Level 1: 
 	All blocks are configured as a trapezoid, with 5 levels of blocks, and there will be more blocks in levels closer to the bottom.
-	[pic]
+	 			  _____ _____ _____ 
+				 |_____|_____|_____|
+			  |_____|_____|_____|_____|
+		   |_____|_____|_____|_____|_____|
+		|_____|_____|_____|_____|_____|_____|
+	|_____|_____|_____|_____|_____|_____|_____|
+	
 	The paddle speed in Level 1 will be the fastest among three levels.
 2. Level 2:
 	All blocks are configured as 4 separate static strips, each from one side of the screen to the other. There will be certain distance between any two adjacent strips. Blocks in each strip are contiguous.
-	[pic]
+	 _____ _____ _____ _____ _____ _____ _____
+	|_____|_____|_____|_____|_____|_____|_____|
+	 _____ _____ _____ _____ _____ _____ _____
+	|_____|_____|_____|_____|_____|_____|_____|
+	 _____ _____ _____ _____ _____ _____ _____
+	|_____|_____|_____|_____|_____|_____|_____|
+	 _____ _____ _____ _____ _____ _____ _____
+	|_____|_____|_____|_____|_____|_____|_____|
 	The paddle speed in Level 2 will be 3/4 of that in Level 1.
 3. Level 3:
 	All blocks are configured as 3 separate moving strips, each consisting of 50 blocks. There will be certain distance between any two adjacent strips, and any two adjacent blocks in one strip.
 	The top and bottom strip moves from left to right, and the medium one moves in the opposite direction. Currently they are designed to move with a same constant speed.
-	[pic]
+	 _____   _____   _____   _____   _____   _____   _____
+	|_____| |_____| |_____| |_____| |_____| |_____| |_____| (->)
+	 _____   _____   _____   _____   _____   _____   _____
+	|_____| |_____| |_____| |_____| |_____| |_____| |_____| (<-)
+	 _____   _____   _____   _____   _____   _____   _____
+	|_____| |_____| |_____| |_____| |_____| |_____| |_____| (->)
 	The paddle speed in Level 3 will be 2/3 of that in Level 1.
 For all levels, the vertical coordinate of the paddle remains the same. The initial horizontal position of the paddle is the medium of its vertical position. 
 For all levels, the ball is located on the medium position of the paddle initially.
