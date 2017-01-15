@@ -91,3 +91,7 @@ For all levels, there are 50% block 1, 30% block 2, and 20% block 3, distributed
 *Splash screen:
 At the beginning of the game, there will be related information shown on the screen, including the name of the game, the author, and basic playing instructions.
 The information won't disappear until the player presses any key or click the mouse.
+
+*Something extra:
+I plan to add sound effects for mutiple actions, including the ball hitting on the paddle, the ball hitting on a brick, and a power-up caught by the paddle.
+I think sound effect can make the game more exciting. Meanwhile, I can practice how to add sound effect in JavaFX.
