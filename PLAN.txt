@@ -46,14 +46,14 @@ For all levels, the ball speed is same without power-ups.
 *Blocks:
 1. Block 1:
 	Normal block. The block gets cracked after 1 hit, and 100 points is added to the player's total score.
-	This block is marked as blue.
+	This block is blue.
 2. Block 2:
 	The block gets cracked after 2 hits, with 100 points for the first hit, and 200 points for the second.
-	This block is marked as green. Its color will be faded to light green after the first hit.
+	This block is green. Its color will become blue after the first hit.
 3. Block 3:
 	The block gets cracked after 3 hits, with 100 points for the first hit, 200 points for the second, and 300 points for the third.
-	This block is marked as red. Its color will be faded to different levels of light red after the first and second hit.
-For all blocks, there is a probability of 0.2 to drop a random power-up after each hit. 
+	This block is red. Its color will become green after the first hit, and blue after the second hit.
+For all blocks, there is a probability of 0.1 to drop a random power-up after each hit. 
 
 *Paddle functions:
 1.  The paddle can make the ball bounce differently depending on where it hits (i.e., the middle third cause the ball to bounce normally, the left and right thirds cause the ball to bounce back in the direction it came)
