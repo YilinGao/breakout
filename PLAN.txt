@@ -10,11 +10,11 @@ The basic playing instruction is the same as the original Breakout game, to use 
 *Levels:
 1. Level 1: 
 	All blocks are configured as a trapezoid, with 5 levels of blocks, and there will be more blocks in levels closer to the bottom.
-	 			  _____ _____ _____ 
-				 |_____|_____|_____|
-			  |_____|_____|_____|_____|
-		   |_____|_____|_____|_____|_____|
-		|_____|_____|_____|_____|_____|_____|
+	 			 _____ _____ _____ 
+			    |_____|_____|_____|
+			 |_____|_____|_____|_____|
+		  |_____|_____|_____|_____|_____|
+	   |_____|_____|_____|_____|_____|_____|
 	|_____|_____|_____|_____|_____|_____|_____|
 	
 	The paddle speed in Level 1 will be the fastest among three levels.
@@ -54,6 +54,7 @@ For all levels, the ball speed is same without power-ups.
 	The block gets cracked after 3 hits, with 100 points for the first hit, 200 points for the second, and 300 points for the third.
 	This block is red. Its color will become green after the first hit, and blue after the second hit.
 For all blocks, there is a probability of 0.1 to drop a random power-up after each hit. 
+For all levels, there are 50% block 1, 30% block 2, and 20% block 3, distributed according to certain algorithm or file input.
 
 *Paddle functions:
 1.  The paddle can make the ball bounce differently depending on where it hits (i.e., the middle third cause the ball to bounce normally, the left and right thirds cause the ball to bounce back in the direction it came)
