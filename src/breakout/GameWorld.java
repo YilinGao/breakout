@@ -6,15 +6,15 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import javafx.scene.shape.Box;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class GameWorld {
-	private static Timeline timeline;
+	private static Timeline timeline; 
 	
 	private static final int WIDTH = 420;
 	private static final int HEIGHT = 600;	
@@ -24,15 +24,32 @@ public class GameWorld {
 	
 	private static Text gameTitle;
 	private static Text instructions;
+	private static Text remainingLives;
+	private static Text currentLevel;
+	private static Text currentScore;
 	private static Paddle paddle;
-	private static Ball[] balls;
-	private static Block[] blocks;
+	private static Ball[] balls = new Ball[1];
+	private static int numOfBlocks;
+	private static int currentNumOfBlocks = numOfBlocks;
+	private static Block[] blocks = new Block[numOfBlocks];
 	private static int lives = 3;
+	private static int level = 1;
+	private static int score = 0;
+	
+	private static final String BRICK1_IMAGE= "brick7.gif";
+	private static final String BRICK2_IMAGE = "brick8.gif";
+	private static final String BRICK3_IMAGE = "brick9.gif";
+	
+	public static final int BALL_SPEED = 50;
+	public static int BALL_DIRECTION_VERTICAL = -1;
+	public static int BALL_DIRECTION_HORIZONTAL = 1;
+	private static final int PADDLE_SPEED = 5;
+	private static int PADDLE_DIRECTION = 1;
 	
 	private static int framesPerSecond;
 	private static String title;
-	private static int millisecondDelay;
-	private static int secondDelay;
+	private static double millisecondDelay;
+	public static double secondDelay;
 
 	/**
 	 * constructor of the class GameWorld
@@ -42,8 +59,8 @@ public class GameWorld {
 	public GameWorld(int fps, String t){
 		framesPerSecond = fps;
 		title = t;
-		millisecondDelay = 1000 / framesPerSecond;
-		secondDelay = 1 / framesPerSecond;
+		millisecondDelay = 1000.0 / framesPerSecond;
+		secondDelay = 1.0 / framesPerSecond;
 	}
 	
 	/**
@@ -63,6 +80,7 @@ public class GameWorld {
 		timeline = new Timeline();
 		timeline.setCycleCount(Timeline.INDEFINITE);
 		timeline.getKeyFrames().add(oneFrame);
+		timeline.play();
 	}
 	
 	/**
@@ -103,20 +121,45 @@ public class GameWorld {
 	}
 	
 	private void loadLevel1(){
+		getGameLoop().play();
+		
 		root.getChildren().clear();
-		// TODO load ball, paddle, bricks for level 1
+		
+		balls[0] = new Ball();
+		balls[0].getBall().setX(WIDTH / 2 - balls[0].getBall().getBoundsInParent().getWidth() / 2);
+		balls[0].getBall().setY(480);
+		root.getChildren().add(balls[0].getBall());
+		
+		paddle = new Paddle();
+		paddle.getPaddle().setX(WIDTH / 2 - paddle.getPaddle().getBoundsInParent().getWidth() / 2);
+		paddle.getPaddle().setY(480 + balls[0].getBall().getBoundsInParent().getHeight());
+		root.getChildren().add(paddle.getPaddle());
+		
+		currentScore = new Text("Current Score: "+ score);
+		currentScore.setX(30);
+		currentScore.setY(50);
+		root.getChildren().add(currentScore);
+		
+		currentLevel = new Text("Level: " + level);
+		currentLevel.setX(390 - currentLevel.getBoundsInLocal().getWidth());
+		currentLevel.setY(50);
+		root.getChildren().add(currentLevel);
+		
+		remainingLives = new Text("Remaining lives: " + lives);
+		remainingLives.setX(30);
+		remainingLives.setY(550);
+		root.getChildren().add(remainingLives);
+		
+		// TODO load bricks for level 1
+		
 	}
 	
 	private boolean isLevelEnd(){
-		// TODO check if the number of bricks on the screen is 0
-		
-		return false;
+		return (currentNumOfBlocks == 0);
 	}
 	
 	private boolean isDead(){
-		// TODO check if the number of lives is 0
-		
-		return false;
+		return (lives == 0);
 	}
 	
 	/**
@@ -124,7 +167,9 @@ public class GameWorld {
 	 * @param elapsedTime: the duration of each frame
 	 */
 	private void actionsPerFrame(double elapsedTime){
-		// TODO
+		// TODO in each frame, the ball moves, the paddle moves, check for hit
+		// update ball
+		balls[0].updateBall(elapsedTime);
 	}
 	
 	private void ballBounceOnPaddle(){

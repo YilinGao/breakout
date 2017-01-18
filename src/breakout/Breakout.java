@@ -15,7 +15,7 @@ public class Breakout extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		// TODO Auto-generated method stub
+		// Auto-generated method stub
 		
 		gameWorld.initialize(primaryStage);
 		gameWorld.buildAndSetGameLoop();
