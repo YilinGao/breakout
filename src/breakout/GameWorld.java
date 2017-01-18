@@ -32,6 +32,7 @@ public class GameWorld {
 	private static int numOfBlocks;
 	private static int currentNumOfBlocks = numOfBlocks;
 	private static Block[] blocks = new Block[numOfBlocks];
+	
 	private static int lives = 3;
 	private static int level = 1;
 	private static int score = 0;
