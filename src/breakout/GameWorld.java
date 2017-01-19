@@ -224,7 +224,8 @@ public class GameWorld {
 		started = false;
 		
 		balls[0].getBall().setX(WIDTH / 2 - balls[0].getBall().getBoundsInParent().getWidth() / 2);
-		balls[0].getBall().setY(480);		
+		balls[0].getBall().setY(480);
+		balls[0].ballReset();
 
 		paddle.getPaddle().setX(WIDTH / 2 - paddle.getPaddle().getBoundsInParent().getWidth() / 2);
 		paddle.getPaddle().setY(balls[0].getBall().getBoundsInParent().getMaxY());
@@ -301,7 +302,10 @@ public class GameWorld {
 		double paddleMaxX = paddle.getPaddle().getBoundsInParent().getMaxX();
 		double ballMaxY = balls[0].getBall().getBoundsInParent().getMaxY();
 		double paddleMinY = paddle.getPaddle().getBoundsInParent().getMinY();
-		if (ballMaxY > paddleMinY && ballMinX >= paddleMinX && ballMaxX <= paddleMaxX)
+		System.out.println("ballMaxY: " + ballMaxY + ", paddleMinY: " + paddleMinY);
+		System.out.println("ballMinX: " + ballMinX + ", paddleMinX: " + paddleMinX);
+		System.out.println("ballMaxX: " + ballMaxX + ", paddleMaxX: " + paddleMaxX + "\n");
+		if (ballMaxY >= paddleMinY && ballMinX >= paddleMinX && ballMaxX <= paddleMaxX)
 			balls[0].ballBounceVertical();
 	}
 	
@@ -309,9 +313,9 @@ public class GameWorld {
 		double ballMinX = balls[0].getBall().getBoundsInParent().getMinX();
 		double ballMaxX = balls[0].getBall().getBoundsInParent().getMaxX();
 		double ballMinY = balls[0].getBall().getBoundsInParent().getMinY();
-		if (ballMinX <= 0 || ballMaxX >= WIDTH)
+		if (ballMinX < 0 || ballMaxX > WIDTH)
 			balls[0].ballBounceHorizontal();
-		else if (ballMinY <= 0)
+		else if (ballMinY < 0)
 			balls[0].ballBounceVertical();
 	}
 	
@@ -334,7 +338,7 @@ public class GameWorld {
 		double paddleMaxX = paddle.getPaddle().getBoundsInParent().getMaxX();
 		double ballMaxY = balls[0].getBall().getBoundsInParent().getMaxY();
 		double paddleMinY = paddle.getPaddle().getBoundsInParent().getMinY();
-		if (ballMaxY >= paddleMinY && (ballMaxX <= paddleMinX || ballMinX >= paddleMaxX)){
+		if (ballMaxY >= paddleMinY && (ballMinX < paddleMinX || ballMaxX > paddleMaxX)){
 			endOfLife();
 		}
 	}

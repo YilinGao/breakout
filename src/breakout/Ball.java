@@ -20,6 +20,13 @@ public class Ball {
 		return ball;
 	}
 	
+	public void ballReset(){
+		if (ball_speed_horizontal < 0)
+			ball_speed_horizontal *= -1;
+		if (ball_speed_vertical < 0)
+			ball_speed_vertical *= -1;
+	}
+	
 	public void updateBall(int direction, double elapsedTime){
 		ball.setX(ball.getX() + elapsedTime * direction * ball_move_speed);
 	}

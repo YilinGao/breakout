@@ -27,7 +27,7 @@ public class Breakout extends Application {
 		stage = primaryStage;
 		
 		gameWorld.initializeWelcome(stage);	
-		gameWorld.getWelcomeButton().setOnAction(e -> gameWorld.initializeLevel1());
+		gameWorld.getWelcomeButton().setOnMouseReleased(e -> gameWorld.initializeLevel1());
 
 		primaryStage.setTitle(title);
 		primaryStage.show();
