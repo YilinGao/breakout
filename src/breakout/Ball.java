@@ -6,9 +6,9 @@ import javafx.scene.image.ImageView;
 public class Ball {
 
 	private static final String BALL_IMAGE = "ball.gif";
-	private int ball_speed_horizontal = 50;
-	private int ball_speed_vertical = 50;
-	private int ball_move_speed = 150;
+	private int ball_speed_horizontal = 150;
+	private int ball_speed_vertical = 150;
+	private int ball_move_speed = 300;
 	private ImageView ball;
 	
 	public Ball(){
