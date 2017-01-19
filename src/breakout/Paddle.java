@@ -2,6 +2,7 @@ package breakout;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 
 public class Paddle {
 
@@ -15,5 +16,9 @@ public class Paddle {
 	
 	public ImageView getPaddle(){
 		return paddle;
+	}
+	
+	public void updatePaddle(int direction, double elapsedTime){
+		paddle.setX(paddle.getX() + GameWorld.PADDLE_SPEED * direction * elapsedTime);
 	}
 }
