@@ -10,7 +10,6 @@ import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
@@ -41,6 +40,7 @@ public class GameWorld {
 	private Button start;
 	private Text gameTitle;
 	private Text instructions;
+	private Text tips;
 	private Text remainingLives;
 	private Text currentLevel;
 	private Text currentScore;
@@ -52,17 +52,13 @@ public class GameWorld {
 	private ArrayList<Integer> levelLayout = new ArrayList<>();
 	
 	private boolean started = false;
-	private boolean paused = false;
 	private int lives = 3;
-	private int level = 1;
+	private int level;
 	private int score = 0;
 	
 	private static final String levelOneInput = "level1.txt";
 	private static final String levelTwoInput = "level2.txt";
 	private static final String levelThreeInput = "level3.txt";
-	private static final String BRICK1_IMAGE= "brick7.gif";
-	private static final String BRICK2_IMAGE = "brick8.gif";
-	private static final String BRICK3_IMAGE = "brick9.gif";
 
 	/**
 	 * constructor of the class GameWorld
@@ -84,14 +80,16 @@ public class GameWorld {
 		rootWelcome = new Group();
 		welcomeScene = new Scene(rootWelcome, WIDTH, HEIGHT, BACKGROUND);
 		
-		gameTitle = new Text(50, 200, "Breakout\nBy Sandy");			
-		instructions = new Text(50, 300, "Press SPACE to start.\nUse \"<-\" and \"->\" to control the paddle.\nYou have 3 lives to start.");
+		gameTitle = new Text(50, 100, "Breakout\nBy Sandy");			
+		instructions = new Text(50, 200, "Press SPACE to start.\nUse \"<-\" and \"->\" to control the paddle.\nYou have 3 lives to start.");
+		tips = new Text(50, 300, "Tips:\nGet control of your paddle!\nGood luck!");
 		start = new Button("Click to start game!");
 		start.setLayoutX(50);
 		start.setLayoutY(400);
 		start.setOnMouseReleased(e -> initializeLevel(1));
 		rootWelcome.getChildren().add(gameTitle);
 		rootWelcome.getChildren().add(instructions);
+		rootWelcome.getChildren().add(tips);
 		rootWelcome.getChildren().add(start);
 		stage.setScene(welcomeScene);
 		currentScene = welcomeScene;
@@ -129,10 +127,7 @@ public class GameWorld {
 			@Override
 			public void handle(KeyEvent event) {
 				if (event.getCode() == KeyCode.SPACE) {
-					if (!started)
-						started = true;
-					else
-						paused = !paused;
+					started = true;
 				}
 			}
 			
@@ -199,37 +194,30 @@ public class GameWorld {
 		Ball newBall = new Ball();		
 		paddle = new Paddle();
 		
-		newBall.getBall().setX(WIDTH / 2 - newBall.getBall().getBoundsInParent().getWidth() / 2);
-		newBall.getBall().setY(480);
-		newBall.ballReset();
+		newBall.setX(WIDTH / 2 - newBall.getBall().getBoundsInParent().getWidth() / 2);
+		newBall.setY(480);
+		newBall.ballResetInitialDirection();
 		balls.clear();
 		balls.add(newBall);
 
-		paddle.getPaddle().setX(WIDTH / 2 - paddle.getPaddle().getBoundsInParent().getWidth() / 2);
-		paddle.getPaddle().setY(newBall.getBall().getBoundsInParent().getMaxY());
+		paddle.setX(WIDTH / 2 - paddle.getPaddle().getBoundsInParent().getWidth() / 2);
+		paddle.setY(newBall.getBall().getBoundsInParent().getMaxY());
 		
 		setupBricks(bricksLayout);		
 	}
 	
 	private void setupBricks(ArrayList<Integer> bricksLayout){
-		int currentLayer = 1;
+		int currentLayer = 0;
 		Random rd = new Random();
-		double type;
-		String path;
+		int type;
 		Block newBrick;
 		double xPosition = WIDTH / 2;
 		double yPosition = 100;
 		
-		for (int num : bricksLayout){
-			for (int i = 0; i < num; i++){
-				type = rd.nextDouble();
-				if (type < 0.5)
-					path = BRICK1_IMAGE;
-				else if (type < 0.8)
-					path = BRICK2_IMAGE;
-				else
-					path = BRICK3_IMAGE;
-				newBrick = new Block(path, currentLayer, i, num); 
+		for (int totalBricksInLayer : bricksLayout){
+			for (int indexInLayer = 0; indexInLayer < totalBricksInLayer; indexInLayer++){
+				type = rd.nextInt(10) + 1;
+				newBrick = new Block(type, currentLayer, indexInLayer , totalBricksInLayer);
 				newBrick.setPosition(xPosition, yPosition);
 				bricks.add(newBrick);
 				numOfBricks++;
@@ -252,10 +240,6 @@ public class GameWorld {
 			root.getChildren().add(brick.getBlock());
 		}
 	}
-		
-	public Button getWelcomeButton(){
-		return start;
-	}
 	
 	/**
 	 * set up game loop (time line),
@@ -276,9 +260,6 @@ public class GameWorld {
 		timeline.getKeyFrames().add(oneFrame);
 	}
 	
-	/**
-	 * start game loop (time line)
-	 */
 	private void beginGameLoop(){
 		timeline.play();
 	}
@@ -293,7 +274,7 @@ public class GameWorld {
 	 */
 	private void actionsPerFrame(double elapsedTime){
 		// TODO check for hit between ball and bricks
-		if (started & !paused){
+		if (started){
 			for (Ball ball: balls)
 				ball.ballMove(elapsedTime);
 			ballBounceOnPaddle();
@@ -312,50 +293,23 @@ public class GameWorld {
 		}
 		else if (code == KeyCode.RIGHT){
 			direction = 1;
-		}
+		}	
 		
-		switch (paddleBounceOnWalls()) {
-		case 1:
-			if (-1 == direction)
-				direction = 0;
-			break;
-		case 2:
-			if (1 == direction)
-				direction = 0;
-			break;
-		}
-		
+		paddle.paddleMove(direction, elapsedTime);
 		if (!started)
 			for (Ball ball : balls)
-				ball.updateBall(direction, elapsedTime);
-		if (!paused)
-			paddle.updatePaddle(direction, elapsedTime);
-	}
-	
-	private int paddleBounceOnWalls() {
-		double paddleMinX = paddle.getPaddle().getBoundsInParent().getMinX();
-		double paddleMaxX = paddle.getPaddle().getBoundsInParent().getMaxX();
-		
-		if (paddleMinX < 0)
-			return 1;
-		else if (paddleMaxX > WIDTH)
-			return 2;
-		return 0;
+				ball.ballMoveWithPaddle(paddle);
 	}
 	
 	private void ballBounceOnPaddle(){
 		for (Ball ball: balls){
-			double ballMinX = ball.getBall().getBoundsInParent().getMinX();
-			double ballCenterX = ballMinX + ball.getBall().getBoundsInParent().getWidth() / 2;
-			double paddleMinX = paddle.getPaddle().getBoundsInParent().getMinX();
-			double paddleMaxX = paddle.getPaddle().getBoundsInParent().getMaxX();
-			double ballMaxY = ball.getBall().getBoundsInParent().getMaxY();
-			double paddleMinY = paddle.getPaddle().getBoundsInParent().getMinY();
-			double paddleOneThirdsX = paddleMinX + paddle.getPaddle().getBoundsInParent().getWidth() / 3;
-			double paddleTwoThirdsX = paddleMinX + paddle.getPaddle().getBoundsInParent().getWidth() * 2/3;
-	//		System.out.println("ballMaxY: " + ballMaxY + ", paddleMinY: " + paddleMinY);
-	//		System.out.println("paddleMinX: " + paddleMinX + ", paddleMaxX: " + paddleMaxX);
-	//		System.out.println("ballCenterX: " + ballCenterX  + "\n");
+			double ballCenterX = ball.getX() + ball.getWidth() / 2;
+			double paddleMinX = paddle.getX();
+			double paddleMaxX = paddle.getX() + paddle.getWidth();
+			double ballMaxY = ball.getY() + ball.getHeight();
+			double paddleMinY = paddle.getY();
+			double paddleOneThirdsX = paddle.getX() + paddle.getWidth() / 3;
+			double paddleTwoThirdsX = paddle.getX() + paddle.getWidth() * 2 / 3;
 			if (ballMaxY >= paddleMinY){
 				if ((ballCenterX >= paddleMinX && ballCenterX <= paddleOneThirdsX) || (ballCenterX <= paddleMaxX && ballCenterX >= paddleTwoThirdsX)){
 					ball.ballBounceHorizontal();
@@ -370,9 +324,9 @@ public class GameWorld {
 	
 	private void ballBounceOnWalls(){
 		for (Ball ball: balls){
-			double ballMinX = ball.getBall().getBoundsInParent().getMinX();
-			double ballMaxX = ball.getBall().getBoundsInParent().getMaxX();
-			double ballMinY = ball.getBall().getBoundsInParent().getMinY();
+			double ballMinX = ball.getX();
+			double ballMaxX = ball.getX() + ball.getWidth();
+			double ballMinY = ball.getY();
 			if (ballMinX < 0 || ballMaxX > WIDTH)
 				ball.ballBounceHorizontal();
 			else if (ballMinY < 0)
@@ -382,9 +336,9 @@ public class GameWorld {
 	
 	private void ballHitBlock(){
 		// TODO
+		
 		if (isLevelEnd()){
-			if (level == 1)
-				initializeLevel(2);
+			initializeLevel(++level);
 		}
 	}
 	
@@ -394,12 +348,11 @@ public class GameWorld {
 	
 	private void ballFallDown(){
 		for (Ball ball: balls){
-			double ballMinX = ball.getBall().getBoundsInParent().getMinX();
-			double ballCenterX = ballMinX + ball.getBall().getBoundsInParent().getWidth() / 2;
-			double paddleMinX = paddle.getPaddle().getBoundsInParent().getMinX();
-			double paddleMaxX = paddle.getPaddle().getBoundsInParent().getMaxX();
-			double ballMaxY = ball.getBall().getBoundsInParent().getMaxY();
-			double paddleMinY = paddle.getPaddle().getBoundsInParent().getMinY();
+			double ballCenterX = ball.getX() + ball.getWidth() / 2;
+			double paddleMinX = paddle.getX();
+			double paddleMaxX = paddle.getX() + paddle.getWidth();
+			double ballMaxY = ball.getY() + ball.getHeight();
+			double paddleMinY = paddle.getY();
 			if (ballMaxY >= paddleMinY && (ballCenterX < paddleMinX || ballCenterX > paddleMaxX)){
 				endOfLife();
 			}

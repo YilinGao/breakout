@@ -18,7 +18,35 @@ public class Paddle {
 		return paddle;
 	}
 	
-	public void updatePaddle(int direction, double elapsedTime){
-		paddle.setX(paddle.getX() + PADDLE_SPEED * direction * elapsedTime);
+	public double getX(){
+		return paddle.getBoundsInParent().getMinX();
+	}
+	
+	public double getY(){
+		return paddle.getBoundsInParent().getMinY();
+	}
+	
+	public double getWidth(){
+		return paddle.getBoundsInParent().getWidth();
+	}
+	
+	public void setX(double x){
+		paddle.setX(x);
+	}
+	
+	public void setY(double y){
+		paddle.setY(y);
+	}
+	
+	public void paddleMove(int direction, double elapsedTime){
+		if (getX() >= GameWorld.WIDTH){
+			paddle.setX(0 + getX() - GameWorld.WIDTH);
+		}
+		else if (getX() + getWidth() <= 0){
+			paddle.setX(GameWorld.WIDTH + getX());
+		}
+		else{
+			paddle.setX(getX() + PADDLE_SPEED * direction * elapsedTime);
+		}
 	}
 }
