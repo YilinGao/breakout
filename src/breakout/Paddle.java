@@ -2,11 +2,11 @@ package breakout;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
 
 public class Paddle {
 
 	private static final String PADDLE_IMAGE = "paddle.gif";
+	private static final int PADDLE_SPEED = 300;
 	private ImageView paddle;
 	
 	public Paddle(){
@@ -19,6 +19,6 @@ public class Paddle {
 	}
 	
 	public void updatePaddle(int direction, double elapsedTime){
-		paddle.setX(paddle.getX() + GameWorld.PADDLE_SPEED * direction * elapsedTime);
+		paddle.setX(paddle.getX() + PADDLE_SPEED * direction * elapsedTime);
 	}
 }

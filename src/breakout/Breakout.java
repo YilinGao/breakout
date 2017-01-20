@@ -1,13 +1,6 @@
 package breakout;
 
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.scene.Group;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 /**
@@ -27,7 +20,7 @@ public class Breakout extends Application {
 		stage = primaryStage;
 		
 		gameWorld.initializeWelcome(stage);	
-		gameWorld.getWelcomeButton().setOnMouseReleased(e -> gameWorld.initializeLevel1());
+		gameWorld.getWelcomeButton().setOnMouseReleased(e -> gameWorld.initializeLevel(1));
 
 		primaryStage.setTitle(title);
 		primaryStage.show();

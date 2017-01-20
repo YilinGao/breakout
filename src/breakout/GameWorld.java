@@ -1,10 +1,16 @@
 package breakout;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Random;
+import java.util.Scanner;
+
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
@@ -17,13 +23,18 @@ import javafx.util.Duration;
 
 public class GameWorld {
 	private Timeline timeline; 
+	private int framesPerSecond;
+	private double millisecondDelay;
+	private double secondDelay;
 	
 	public static final int WIDTH = 420;
 	public static final int HEIGHT = 600;	
 	public static final Paint BACKGROUND = Color.WHITE;
+	
 	private Stage theStage;
+	private Group rootWelcome, root1, root2, root3, rootResult;
 	private Scene currentScene;
-	private Scene welcomePage, level1, level2, level3, resultPage;
+	private Scene welcomeScene, level1Scene, level2Scene, level3Scene, resultScene;
 	
 	private Button start;
 	private Text gameTitle;
@@ -32,25 +43,25 @@ public class GameWorld {
 	private Text currentLevel;
 	private Text currentScore;
 	private Paddle paddle;
-	private Ball[] balls = new Ball[1];
-	private int numOfBlocks = 0;
-	private int currentNumOfBlocks = numOfBlocks;
-	private Block[] blocks = new Block[numOfBlocks];
+	private ArrayList<Ball> balls = new ArrayList<Ball>();
+	private int numOfBricks, currentNumOfBricks;
+	private ArrayList<Block> bricks = new ArrayList<Block>();
+	
+	private ArrayList<Integer> level1Layout = new ArrayList<>();
+	private ArrayList<Integer> level2Layout = new ArrayList<>();
+	private ArrayList<Integer> level3Layout = new ArrayList<>();
 	
 	private boolean started = false;
 	private int lives = 3;
 	private int level = 1;
 	private int score = 0;
 	
-	private final String BRICK1_IMAGE= "brick7.gif";
-	private final String BRICK2_IMAGE = "brick8.gif";
-	private final String BRICK3_IMAGE = "brick9.gif";
-	
-	public static final int PADDLE_SPEED = 300;
-	
-	private int framesPerSecond;
-	private double millisecondDelay;
-	private double secondDelay;
+	private static final String level1_Input = "level1.txt";
+	private static final String level2_Input = "level2.txt";
+	private static final String level3_Input = "level3.txt";
+	private static final String BRICK1_IMAGE= "brick7.gif";
+	private static final String BRICK2_IMAGE = "brick8.gif";
+	private static final String BRICK3_IMAGE = "brick9.gif";
 
 	/**
 	 * constructor of the class GameWorld
@@ -70,8 +81,8 @@ public class GameWorld {
 	public void initializeWelcome(Stage stage){
 		theStage = stage;
 		
-		Group rootWelcome = new Group();
-		welcomePage = new Scene(rootWelcome, WIDTH, HEIGHT, BACKGROUND);
+		rootWelcome = new Group();
+		welcomeScene = new Scene(rootWelcome, WIDTH, HEIGHT, BACKGROUND);
 		
 		gameTitle = new Text(50, 200, "Breakout\nBy Sandy");			
 		instructions = new Text(50, 300, "Press SPACE to start.\nUse \"<-\" and \"->\" to control the paddle.\nYou have 3 lives to start.");
@@ -81,33 +92,41 @@ public class GameWorld {
 		rootWelcome.getChildren().add(gameTitle);
 		rootWelcome.getChildren().add(instructions);
 		rootWelcome.getChildren().add(start);
-		stage.setScene(welcomePage);
-		currentScene = welcomePage;
+		stage.setScene(welcomeScene);
+		currentScene = welcomeScene;
 	}
 	
-	public void initializeLevel1(){
-		level = 1;
+	public void initializeLevel(int targetLevel){
+		level = targetLevel;
+		Group root = new Group();
+		Scene scene = new Scene(root, WIDTH, HEIGHT, BACKGROUND);
+		String inputPath;
+		ArrayList<Integer> outputList;
 		
-		Group rootLevel1 = new Group();
-		level1 = new Scene(rootLevel1, WIDTH, HEIGHT, BACKGROUND);
-		
-		balls[0] = new Ball();		
-		paddle = new Paddle();
-		// TODO load bricks for level 1		
-
-		setFixedItems();
-		setMovableItems();
-		
-		rootLevel1.getChildren().add(balls[0].getBall());
-		rootLevel1.getChildren().add(paddle.getPaddle());				
-		rootLevel1.getChildren().add(currentScore);		
-		rootLevel1.getChildren().add(currentLevel);		
-		rootLevel1.getChildren().add(remainingLives);
-
-		
-		theStage.setScene(level1);
-		currentScene = level1;
-		// TODO what's the difference between Pressed and Released?
+		if (level == 1){
+			root1 = root;
+			level1Scene = scene;
+			inputPath = level1_Input;
+			outputList = level1Layout;
+		}
+		else if (level == 2){
+			root2 = root;
+			level2Scene = scene;
+			inputPath = level2_Input;
+			outputList = level2Layout;
+		}
+		else{
+			root3 = root;
+			level3Scene = scene;
+			inputPath = level3_Input;
+			outputList = level3Layout;
+		}
+		readInput(inputPath, outputList);
+		setupFixedItems();
+		setupMovableItems(outputList);
+		addNodesToRoot(root);		
+		theStage.setScene(scene);
+		currentScene = scene;
 		currentScene.setOnKeyReleased(new EventHandler<KeyEvent>() {
 
 			@Override
@@ -120,76 +139,12 @@ public class GameWorld {
 		buildAndSetGameLoop();
 		beginGameLoop();
 	}
-
-	private void initializeLevel2(){
-		level = 2;
-		
-		Group rootLevel2 = new Group();
-		level2 = new Scene(rootLevel2, WIDTH, HEIGHT, BACKGROUND);
-		
-		balls[0] = new Ball();		
-		paddle = new Paddle();
-		// TODO load bricks for level 2
-		
-		rootLevel2.getChildren().add(balls[0].getBall());
-		rootLevel2.getChildren().add(paddle.getPaddle());				
-		rootLevel2.getChildren().add(currentScore);		
-		rootLevel2.getChildren().add(currentLevel);		
-		rootLevel2.getChildren().add(remainingLives);
-
-		setFixedItems();
-		setMovableItems();
-		
-		theStage.setScene(level2);
-		currentScene = level2;
-		currentScene.setOnKeyReleased(new EventHandler<KeyEvent>() {
-
-			@Override
-			public void handle(KeyEvent event) {
-				if (event.getCode() == KeyCode.SPACE)
-					started = true;				
-			}
-			
-		});
-	}
-
-	private void initializeLevel3(){
-		level = 3;
-		
-		Group rootLevel3 = new Group();
-		level3 = new Scene(rootLevel3, WIDTH, HEIGHT, BACKGROUND);
-		
-		balls[0] = new Ball();		
-		paddle = new Paddle();
-		// TODO load bricks for level 2
-		
-		rootLevel3.getChildren().add(balls[0].getBall());
-		rootLevel3.getChildren().add(paddle.getPaddle());				
-		rootLevel3.getChildren().add(currentScore);		
-		rootLevel3.getChildren().add(currentLevel);		
-		rootLevel3.getChildren().add(remainingLives);
-
-		setFixedItems();
-		setMovableItems();
-		
-		theStage.setScene(level3);
-		currentScene = level3;
-		currentScene.setOnKeyReleased(new EventHandler<KeyEvent>() {
-
-			@Override
-			public void handle(KeyEvent event) {
-				if (event.getCode() == KeyCode.SPACE)
-					started = true;				
-			}
-			
-		});
-	}
 	
 	private void initializeResultPage(){
 		stopGameLoop();
 		
-		Group rootResult = new Group();
-		resultPage = new Scene(rootResult, WIDTH, HEIGHT, BACKGROUND);
+		rootResult = new Group();
+		resultScene = new Scene(rootResult, WIDTH, HEIGHT, BACKGROUND);
 		
 		Text report = new Text();
 		if (isDead()){
@@ -202,11 +157,28 @@ public class GameWorld {
 		report.setY(300);
 		
 		rootResult.getChildren().add(report);
-		theStage.setScene(resultPage);
-		currentScene = resultPage;
+		theStage.setScene(resultScene);
+		currentScene = resultScene;
+	}
+	
+	private void readInput(String inputPath, ArrayList<Integer> outputList){
+		File file = new File(inputPath);
+		Scanner sc = null;
+		try{
+			sc = new Scanner(file);
+			while (sc.hasNextLine()){
+				outputList.add(sc.nextInt());
+			}
+			sc.close();
+		}
+		catch (Exception e){
+			e.printStackTrace();
+		} finally{
+			if (sc != null) sc.close();
+		}
 	}
 
-	private void setFixedItems(){
+	private void setupFixedItems(){
 		currentScore = new Text("Current Score: "+ score);
 		currentScore.setX(30);
 		currentScore.setY(50);
@@ -220,16 +192,63 @@ public class GameWorld {
 		remainingLives.setY(550);
 	}
 	
-	private void setMovableItems(){
+	private void setupMovableItems(ArrayList<Integer> bricksLayout){
 		started = false;
+
+		Ball newBall = new Ball();		
+		paddle = new Paddle();
 		
-		balls[0].getBall().setX(WIDTH / 2 - balls[0].getBall().getBoundsInParent().getWidth() / 2);
-		balls[0].getBall().setY(480);
-		balls[0].ballReset();
+		newBall.getBall().setX(WIDTH / 2 - newBall.getBall().getBoundsInParent().getWidth() / 2);
+		newBall.getBall().setY(480);
+		newBall.ballReset();
+		balls.clear();
+		balls.add(newBall);
 
 		paddle.getPaddle().setX(WIDTH / 2 - paddle.getPaddle().getBoundsInParent().getWidth() / 2);
-		paddle.getPaddle().setY(balls[0].getBall().getBoundsInParent().getMaxY());
-		// TODO load bricks for each level
+		paddle.getPaddle().setY(newBall.getBall().getBoundsInParent().getMaxY());
+		
+		setupBricks(bricksLayout);		
+	}
+	
+	private void setupBricks(ArrayList<Integer> bricksLayout){
+		int currentLayer = 1;
+		Random rd = new Random();
+		double type;
+		String path;
+		Block newBrick;
+		double xPosition = WIDTH / 2;
+		double yPosition = 100;
+		for (int num : bricksLayout){
+			for (int i = 0; i < num; i++){
+				type = rd.nextDouble();
+				if (type < 0.5)
+					path = BRICK1_IMAGE;
+				else if (type < 0.8)
+					path = BRICK2_IMAGE;
+				else
+					path = BRICK3_IMAGE;
+				newBrick = new Block(path, currentLayer, i, num); 
+				newBrick.setPosition(xPosition, yPosition);
+				bricks.add(newBrick);
+				numOfBricks++;
+			}
+			currentLayer++;
+		}
+		currentNumOfBricks = numOfBricks;
+	}
+	
+	private void addNodesToRoot(Group root){
+		root.getChildren().clear();
+		for (Ball ball: balls){
+			root.getChildren().add(ball.getBall());
+		}
+		root.getChildren().add(paddle.getPaddle());				
+		root.getChildren().add(currentScore);		
+		root.getChildren().add(currentLevel);		
+		root.getChildren().add(remainingLives);
+		for (Block brick: bricks){
+			root.getChildren().add(brick.getBlock());
+		}
 	}
 		
 	public Button getWelcomeButton(){
@@ -273,7 +292,8 @@ public class GameWorld {
 	private void actionsPerFrame(double elapsedTime){
 		// TODO check for hit between ball and bricks
 		if (started){
-			balls[0].ballMove(elapsedTime);
+			for (Ball ball: balls)
+				ball.ballMove(elapsedTime);
 			ballBounceOnPaddle();
 			ballBounceOnWalls();
 //			ballHitBlock();
@@ -285,54 +305,60 @@ public class GameWorld {
 	private void handleKeyInput(KeyCode code, double elapsedTime){
 		if (code == KeyCode.LEFT){
 			if (!started)
-				balls[0].updateBall(-1, elapsedTime);
+				for (Ball ball: balls)
+					ball.updateBall(-1, elapsedTime);
 			paddle.updatePaddle(-1, elapsedTime);
 		}
 		else if (code == KeyCode.RIGHT){
 			if (!started)
-				balls[0].updateBall(1, elapsedTime);
+				for (Ball ball: balls)
+					ball.updateBall(1, elapsedTime);
 			paddle.updatePaddle(1, elapsedTime);
 		}
 	}
 	
 	private void ballBounceOnPaddle(){
-		double ballMinX = balls[0].getBall().getBoundsInParent().getMinX();
-		double ballCenterX = ballMinX + balls[0].getBall().getBoundsInParent().getWidth() / 2;
-		double paddleMinX = paddle.getPaddle().getBoundsInParent().getMinX();
-		double paddleMaxX = paddle.getPaddle().getBoundsInParent().getMaxX();
-		double ballMaxY = balls[0].getBall().getBoundsInParent().getMaxY();
-		double paddleMinY = paddle.getPaddle().getBoundsInParent().getMinY();
-		double paddleOneThirdsX = paddleMinX + paddle.getPaddle().getBoundsInParent().getWidth() / 3;
-		double paddleTwoThirdsX = paddleMinX + paddle.getPaddle().getBoundsInParent().getWidth() * 2/3;
-		System.out.println("ballMaxY: " + ballMaxY + ", paddleMinY: " + paddleMinY);
-		System.out.println("paddleMinX: " + paddleMinX + ", paddleMaxX: " + paddleMaxX);
-		System.out.println("ballCenterX: " + ballCenterX  + "\n");
-		if (ballMaxY >= paddleMinY){
-			if ((ballCenterX >= paddleMinX && ballCenterX <= paddleOneThirdsX) || (ballCenterX <= paddleMaxX && ballCenterX >= paddleTwoThirdsX)){
-				balls[0].ballBounceHorizontal();
-				balls[0].ballBounceVertical();
-			}
-			else if (ballCenterX > paddleOneThirdsX && ballCenterX < paddleTwoThirdsX){
-				balls[0].ballBounceVertical();
+		for (Ball ball: balls){
+			double ballMinX = ball.getBall().getBoundsInParent().getMinX();
+			double ballCenterX = ballMinX + ball.getBall().getBoundsInParent().getWidth() / 2;
+			double paddleMinX = paddle.getPaddle().getBoundsInParent().getMinX();
+			double paddleMaxX = paddle.getPaddle().getBoundsInParent().getMaxX();
+			double ballMaxY = ball.getBall().getBoundsInParent().getMaxY();
+			double paddleMinY = paddle.getPaddle().getBoundsInParent().getMinY();
+			double paddleOneThirdsX = paddleMinX + paddle.getPaddle().getBoundsInParent().getWidth() / 3;
+			double paddleTwoThirdsX = paddleMinX + paddle.getPaddle().getBoundsInParent().getWidth() * 2/3;
+	//		System.out.println("ballMaxY: " + ballMaxY + ", paddleMinY: " + paddleMinY);
+	//		System.out.println("paddleMinX: " + paddleMinX + ", paddleMaxX: " + paddleMaxX);
+	//		System.out.println("ballCenterX: " + ballCenterX  + "\n");
+			if (ballMaxY >= paddleMinY){
+				if ((ballCenterX >= paddleMinX && ballCenterX <= paddleOneThirdsX) || (ballCenterX <= paddleMaxX && ballCenterX >= paddleTwoThirdsX)){
+					ball.ballBounceHorizontal();
+					ball.ballBounceVertical();
+				}
+				else if (ballCenterX > paddleOneThirdsX && ballCenterX < paddleTwoThirdsX){
+					ball.ballBounceVertical();
+				}
 			}
 		}
 	}
 	
 	private void ballBounceOnWalls(){
-		double ballMinX = balls[0].getBall().getBoundsInParent().getMinX();
-		double ballMaxX = balls[0].getBall().getBoundsInParent().getMaxX();
-		double ballMinY = balls[0].getBall().getBoundsInParent().getMinY();
-		if (ballMinX < 0 || ballMaxX > WIDTH)
-			balls[0].ballBounceHorizontal();
-		else if (ballMinY < 0)
-			balls[0].ballBounceVertical();
+		for (Ball ball: balls){
+			double ballMinX = ball.getBall().getBoundsInParent().getMinX();
+			double ballMaxX = ball.getBall().getBoundsInParent().getMaxX();
+			double ballMinY = ball.getBall().getBoundsInParent().getMinY();
+			if (ballMinX < 0 || ballMaxX > WIDTH)
+				ball.ballBounceHorizontal();
+			else if (ballMinY < 0)
+				ball.ballBounceVertical();
+		}
 	}
 	
 	private void ballHitBlock(){
 		// TODO
 		if (isLevelEnd()){
 			if (level == 1)
-				initializeLevel2();
+				initializeLevel(2);
 		}
 	}
 	
@@ -341,14 +367,16 @@ public class GameWorld {
 	}
 	
 	private void ballFallDown(){
-		double ballMinX = balls[0].getBall().getBoundsInParent().getMinX();
-		double ballCenterX = ballMinX + balls[0].getBall().getBoundsInParent().getWidth() / 2;
-		double paddleMinX = paddle.getPaddle().getBoundsInParent().getMinX();
-		double paddleMaxX = paddle.getPaddle().getBoundsInParent().getMaxX();
-		double ballMaxY = balls[0].getBall().getBoundsInParent().getMaxY();
-		double paddleMinY = paddle.getPaddle().getBoundsInParent().getMinY();
-		if (ballMaxY >= paddleMinY && (ballCenterX < paddleMinX || ballCenterX > paddleMaxX)){
-			endOfLife();
+		for (Ball ball: balls){
+			double ballMinX = ball.getBall().getBoundsInParent().getMinX();
+			double ballCenterX = ballMinX + ball.getBall().getBoundsInParent().getWidth() / 2;
+			double paddleMinX = paddle.getPaddle().getBoundsInParent().getMinX();
+			double paddleMaxX = paddle.getPaddle().getBoundsInParent().getMaxX();
+			double ballMaxY = ball.getBall().getBoundsInParent().getMaxY();
+			double paddleMinY = paddle.getPaddle().getBoundsInParent().getMinY();
+			if (ballMaxY >= paddleMinY && (ballCenterX < paddleMinX || ballCenterX > paddleMaxX)){
+				endOfLife();
+			}
 		}
 	}
 	
@@ -356,7 +384,11 @@ public class GameWorld {
 		lives--;
 		if (!isDead()){
 			remainingLives.setText("Remaining lives: " + lives);
-			setMovableItems();
+			if (level == 1){
+				setupFixedItems();
+				setupMovableItems(level1Layout);
+				addNodesToRoot(root1);	
+			}
 		}
 		else{
 			initializeResultPage();
@@ -364,7 +396,7 @@ public class GameWorld {
 	}
 
 	private boolean isLevelEnd(){
-		return (currentNumOfBlocks == 0);
+		return (currentNumOfBricks == 0);
 	}
 	
 	private boolean isDead(){
