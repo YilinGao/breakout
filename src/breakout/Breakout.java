@@ -9,21 +9,12 @@ import javafx.stage.Stage;
  *
  */
 public class Breakout extends Application {
-	private static final int framesPerSecond = 60;
-	private static final String title = "Breakout";
-	private GameWorld gameWorld = new GameWorld(framesPerSecond);
-	private Stage stage;
+	private GameWorld gameWorld = new GameWorld();
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		// Auto-generated method stub
-		stage = primaryStage;
-		
-		gameWorld.initializeWelcome(stage);	
-		gameWorld.getWelcomeButton().setOnMouseReleased(e -> gameWorld.initializeLevel(1));
-
-		primaryStage.setTitle(title);
-		primaryStage.show();
+		// Auto-generated method stub	
+		gameWorld.initializeWelcome(primaryStage);
 	}
 	
 	
