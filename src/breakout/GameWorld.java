@@ -22,8 +22,10 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class GameWorld {
+	private static final String title = "Breakout";
+	private static final int framesPerSecond = 60;
+	
 	private Timeline timeline; 
-	private int framesPerSecond;
 	private double millisecondDelay;
 	private double secondDelay;
 	
@@ -32,9 +34,9 @@ public class GameWorld {
 	public static final Paint BACKGROUND = Color.WHITE;
 	
 	private Stage theStage;
-	private Group rootWelcome, root1, root2, root3, rootResult;
+	private Group rootWelcome, rootLevel, rootResult;
 	private Scene currentScene;
-	private Scene welcomeScene, level1Scene, level2Scene, level3Scene, resultScene;
+	private Scene welcomeScene, levelScene, resultScene;
 	
 	private Button start;
 	private Text gameTitle;
@@ -47,18 +49,17 @@ public class GameWorld {
 	private int numOfBricks, currentNumOfBricks;
 	private ArrayList<Block> bricks = new ArrayList<Block>();
 	
-	private ArrayList<Integer> level1Layout = new ArrayList<>();
-	private ArrayList<Integer> level2Layout = new ArrayList<>();
-	private ArrayList<Integer> level3Layout = new ArrayList<>();
+	private ArrayList<Integer> levelLayout = new ArrayList<>();
 	
 	private boolean started = false;
+	private boolean paused = false;
 	private int lives = 3;
 	private int level = 1;
 	private int score = 0;
 	
-	private static final String level1_Input = "level1.txt";
-	private static final String level2_Input = "level2.txt";
-	private static final String level3_Input = "level3.txt";
+	private static final String levelOneInput = "level1.txt";
+	private static final String levelTwoInput = "level2.txt";
+	private static final String levelThreeInput = "level3.txt";
 	private static final String BRICK1_IMAGE= "brick7.gif";
 	private static final String BRICK2_IMAGE = "brick8.gif";
 	private static final String BRICK3_IMAGE = "brick9.gif";
@@ -68,12 +69,11 @@ public class GameWorld {
 	 * @param fps: number of frames per second
 	 * @param t: title of the stage
 	 */
-	public GameWorld(int fps){
-		framesPerSecond = fps;
+	public GameWorld() {
 		millisecondDelay = 1000.0 / framesPerSecond;
 		secondDelay = 1.0 / framesPerSecond;
 	}
-	
+
 	/**
 	 * Build up stage, scene, and nodes in the scene
 	 * @param stage: primaryStage in Application's start() method
@@ -89,50 +89,51 @@ public class GameWorld {
 		start = new Button("Click to start game!");
 		start.setLayoutX(50);
 		start.setLayoutY(400);
+		start.setOnMouseReleased(e -> initializeLevel(1));
 		rootWelcome.getChildren().add(gameTitle);
 		rootWelcome.getChildren().add(instructions);
 		rootWelcome.getChildren().add(start);
 		stage.setScene(welcomeScene);
 		currentScene = welcomeScene;
+		stage.setTitle(title);
+		stage.show();
 	}
 	
 	public void initializeLevel(int targetLevel){
 		level = targetLevel;
-		Group root = new Group();
-		Scene scene = new Scene(root, WIDTH, HEIGHT, BACKGROUND);
-		String inputPath;
-		ArrayList<Integer> outputList;
+		rootLevel = new Group();
+		levelScene = new Scene(rootLevel, WIDTH, HEIGHT, BACKGROUND);
 		
-		if (level == 1){
-			root1 = root;
-			level1Scene = scene;
-			inputPath = level1_Input;
-			outputList = level1Layout;
+		switch (level) {
+		case 1:
+			readInput(levelOneInput, levelLayout);
+			break;
+		case 2:
+			readInput(levelTwoInput, levelLayout);
+			break;
+		case 3:
+			readInput(levelThreeInput, levelLayout);
+			break;
+		default:
+			readInput(levelOneInput, levelLayout);
+			break;
 		}
-		else if (level == 2){
-			root2 = root;
-			level2Scene = scene;
-			inputPath = level2_Input;
-			outputList = level2Layout;
-		}
-		else{
-			root3 = root;
-			level3Scene = scene;
-			inputPath = level3_Input;
-			outputList = level3Layout;
-		}
-		readInput(inputPath, outputList);
+
 		setupFixedItems();
-		setupMovableItems(outputList);
-		addNodesToRoot(root);		
-		theStage.setScene(scene);
-		currentScene = scene;
+		setupMovableItems(levelLayout);
+		addNodesToRoot(rootLevel);		
+		theStage.setScene(levelScene);
+		currentScene = levelScene;
 		currentScene.setOnKeyReleased(new EventHandler<KeyEvent>() {
 
 			@Override
 			public void handle(KeyEvent event) {
-				if (event.getCode() == KeyCode.SPACE)
-					started = true;				
+				if (event.getCode() == KeyCode.SPACE) {
+					if (!started)
+						started = true;
+					else
+						paused = !paused;
+				}
 			}
 			
 		});
@@ -218,6 +219,7 @@ public class GameWorld {
 		Block newBrick;
 		double xPosition = WIDTH / 2;
 		double yPosition = 100;
+		
 		for (int num : bricksLayout){
 			for (int i = 0; i < num; i++){
 				type = rd.nextDouble();
@@ -291,7 +293,7 @@ public class GameWorld {
 	 */
 	private void actionsPerFrame(double elapsedTime){
 		// TODO check for hit between ball and bricks
-		if (started){
+		if (started & !paused){
 			for (Ball ball: balls)
 				ball.ballMove(elapsedTime);
 			ballBounceOnPaddle();
@@ -301,20 +303,44 @@ public class GameWorld {
 		}
 		currentScene.setOnKeyPressed(e -> handleKeyInput(e.getCode(), elapsedTime));
 	}
-	
+
 	private void handleKeyInput(KeyCode code, double elapsedTime){
+		int direction = 0;
+
 		if (code == KeyCode.LEFT){
-			if (!started)
-				for (Ball ball: balls)
-					ball.updateBall(-1, elapsedTime);
-			paddle.updatePaddle(-1, elapsedTime);
+			direction = -1;
 		}
 		else if (code == KeyCode.RIGHT){
-			if (!started)
-				for (Ball ball: balls)
-					ball.updateBall(1, elapsedTime);
-			paddle.updatePaddle(1, elapsedTime);
+			direction = 1;
 		}
+		
+		switch (paddleBounceOnWalls()) {
+		case 1:
+			if (-1 == direction)
+				direction = 0;
+			break;
+		case 2:
+			if (1 == direction)
+				direction = 0;
+			break;
+		}
+		
+		if (!started)
+			for (Ball ball : balls)
+				ball.updateBall(direction, elapsedTime);
+		if (!paused)
+			paddle.updatePaddle(direction, elapsedTime);
+	}
+	
+	private int paddleBounceOnWalls() {
+		double paddleMinX = paddle.getPaddle().getBoundsInParent().getMinX();
+		double paddleMaxX = paddle.getPaddle().getBoundsInParent().getMaxX();
+		
+		if (paddleMinX < 0)
+			return 1;
+		else if (paddleMaxX > WIDTH)
+			return 2;
+		return 0;
 	}
 	
 	private void ballBounceOnPaddle(){
@@ -384,11 +410,10 @@ public class GameWorld {
 		lives--;
 		if (!isDead()){
 			remainingLives.setText("Remaining lives: " + lives);
-			if (level == 1){
-				setupFixedItems();
-				setupMovableItems(level1Layout);
-				addNodesToRoot(root1);	
-			}
+			
+			setupFixedItems();
+			setupMovableItems(levelLayout);
+			addNodesToRoot(rootLevel);	
 		}
 		else{
 			initializeResultPage();
