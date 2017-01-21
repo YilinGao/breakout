@@ -4,9 +4,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 public class Paddle {
-
 	private static final String PADDLE_IMAGE = "paddle.gif";
-	private static final int PADDLE_SPEED = 300;
+	private static final int PADDLE_SPEED = 1200;
 	private ImageView paddle;
 	
 	public Paddle(){

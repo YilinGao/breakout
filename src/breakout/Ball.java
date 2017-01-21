@@ -7,7 +7,7 @@ public class Ball {
 
 	private static final String BALL_IMAGE = "ball.gif";
 	private int ball_speed_horizontal = 150;
-	private int ball_speed_vertical = 150;
+	private int ball_speed_vertical = -150;
 	private ImageView ball;
 	
 	public Ball(){
@@ -35,6 +35,18 @@ public class Ball {
 		return ball.getBoundsInParent().getHeight();
 	}
 	
+	public int getDirectionHorizontal(){
+		if (ball_speed_horizontal > 0)
+			return 1;
+		return -1;
+	}
+	
+	public int getDirectionVertical(){
+		if (ball_speed_vertical > 0)
+			return 1;
+		return -1;
+	}
+	
 	public void setX(double x){
 		ball.setX(x);
 	}
@@ -46,7 +58,7 @@ public class Ball {
 	public void ballResetInitialDirection(){
 		if (ball_speed_horizontal < 0)
 			ball_speed_horizontal *= -1;
-		if (ball_speed_vertical < 0)
+		if (ball_speed_vertical > 0)
 			ball_speed_vertical *= -1;
 	}
 	
@@ -57,7 +69,7 @@ public class Ball {
 	
 	public void ballMove(double elapsedTime){
 		ball.setX(ball.getX() + elapsedTime * ball_speed_horizontal);
-		ball.setY(ball.getY() - elapsedTime * ball_speed_vertical);
+		ball.setY(ball.getY() + elapsedTime * ball_speed_vertical);
 	}
 	
 	public void ballBounceHorizontal(){
@@ -66,9 +78,5 @@ public class Ball {
 	
 	public void ballBounceVertical(){
 		ball_speed_vertical *= -1;
-	}
-	
-	public void ballDie(){
-		
 	}
 }

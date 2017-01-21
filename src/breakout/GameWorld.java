@@ -22,7 +22,7 @@ import javafx.util.Duration;
 
 public class GameWorld {
 	private static final String title = "Breakout";
-	private static final int framesPerSecond = 60;
+	private static final int framesPerSecond = 120;
 	
 	private Timeline timeline; 
 	private double millisecondDelay;
@@ -47,7 +47,8 @@ public class GameWorld {
 	private Paddle paddle;
 	private ArrayList<Ball> balls = new ArrayList<Ball>();
 	private int numOfBricks, currentNumOfBricks;
-	private ArrayList<Block> bricks = new ArrayList<Block>();
+	private ArrayList<Brick> bricks = new ArrayList<Brick>();
+	private ArrayList<Brick> bricksToBeRemoved = new ArrayList<Brick>();
 	
 	private ArrayList<Integer> levelLayout = new ArrayList<>();
 	
@@ -86,7 +87,7 @@ public class GameWorld {
 		start = new Button("Click to start game!");
 		start.setLayoutX(50);
 		start.setLayoutY(400);
-		start.setOnMouseReleased(e -> initializeLevel(1));
+		start.setOnMouseReleased(e -> initializeLevel(3));
 		rootWelcome.getChildren().add(gameTitle);
 		rootWelcome.getChildren().add(instructions);
 		rootWelcome.getChildren().add(tips);
@@ -158,6 +159,7 @@ public class GameWorld {
 	}
 	
 	private void readInput(String inputPath, ArrayList<Integer> outputList){
+		outputList.clear();
 		File file = new File(inputPath);
 		Scanner sc = null;
 		try{
@@ -209,18 +211,20 @@ public class GameWorld {
 	private void setupBricks(ArrayList<Integer> bricksLayout){
 		int currentLayer = 0;
 		Random rd = new Random();
-		int type;
-		Block newBrick;
+		int rn;
+		Brick newBrick;
 		double xPosition = WIDTH / 2;
 		double yPosition = 100;
-		
+
+		numOfBricks = 0;
+		currentNumOfBricks = 0;
+		bricks.clear();
 		for (int totalBricksInLayer : bricksLayout){
 			for (int indexInLayer = 0; indexInLayer < totalBricksInLayer; indexInLayer++){
-				type = rd.nextInt(10) + 1;
-				newBrick = new Block(type, currentLayer, indexInLayer , totalBricksInLayer);
+				rn = rd.nextInt(10) + 1;
+				newBrick = new Brick(rn, currentLayer, indexInLayer , totalBricksInLayer, numOfBricks++);
 				newBrick.setPosition(xPosition, yPosition);
 				bricks.add(newBrick);
-				numOfBricks++;
 			}
 			currentLayer++;
 		}
@@ -236,8 +240,8 @@ public class GameWorld {
 		root.getChildren().add(currentScore);		
 		root.getChildren().add(currentLevel);		
 		root.getChildren().add(remainingLives);
-		for (Block brick: bricks){
-			root.getChildren().add(brick.getBlock());
+		for (Brick brick: bricks){
+			root.getChildren().add(brick.getBrick());
 		}
 	}
 	
@@ -273,28 +277,33 @@ public class GameWorld {
 	 * @param elapsedTime: the duration of each frame
 	 */
 	private void actionsPerFrame(double elapsedTime){
-		// TODO check for hit between ball and bricks
+		// TODO drop power-ups
 		if (started){
 			for (Ball ball: balls)
 				ball.ballMove(elapsedTime);
 			ballBounceOnPaddle();
 			ballBounceOnWalls();
-//			ballHitBlock();
-			ballFallDown();
+			ballHitOnAllBricks();
+			ballFallDown();			
+			if (isLevelEnd()){
+				initializeLevel(++level);
+			}
+		}
+		for (Brick brick: bricks){
+			brick.brickMove(elapsedTime);
 		}
 		currentScene.setOnKeyPressed(e -> handleKeyInput(e.getCode(), elapsedTime));
 	}
 
+
 	private void handleKeyInput(KeyCode code, double elapsedTime){
 		int direction = 0;
-
 		if (code == KeyCode.LEFT){
 			direction = -1;
 		}
 		else if (code == KeyCode.RIGHT){
 			direction = 1;
-		}	
-		
+		}			
 		paddle.paddleMove(direction, elapsedTime);
 		if (!started)
 			for (Ball ball : balls)
@@ -327,19 +336,84 @@ public class GameWorld {
 			double ballMinX = ball.getX();
 			double ballMaxX = ball.getX() + ball.getWidth();
 			double ballMinY = ball.getY();
-			if (ballMinX < 0 || ballMaxX > WIDTH)
+			double ballMaxY = ball.getY() + ball.getHeight();
+			System.out.println("ballMinX: " + ballMinX + ", ballMaxX: " + ballMaxX + ", ballMinY: " + ballMinY + ", ballMaxY: " + ballMaxY);
+			if ((ballMinX < 0 && ballMaxX > 0) || (ballMaxX > WIDTH && ballMinX < WIDTH))
 				ball.ballBounceHorizontal();
-			else if (ballMinY < 0)
+			else if (ballMinY < 0 && ballMaxY > 0)
 				ball.ballBounceVertical();
 		}
 	}
-	
-	private void ballHitBlock(){
-		// TODO
-		
-		if (isLevelEnd()){
-			initializeLevel(++level);
+
+	private void ballHitOnAllBricks() {
+		bricksToBeRemoved.clear();
+		for (Brick brick: bricks){
+			for (Ball ball: balls){
+				ballHitBrick(ball, brick);
+			}
 		}
+		for (Brick brick: bricks){
+			if (brick.getRemovalMark()){
+				bricksToBeRemoved.add(brick);
+				rootLevel.getChildren().remove(brick.getBrick());
+				currentNumOfBricks--;
+				System.out.println("brick " + brick.getIndex() + " is added into the array. There are " + currentNumOfBricks + " bricks.");
+			}
+		}
+		bricks.removeAll(bricksToBeRemoved);
+	}
+	
+	private void ballHitBrick(Ball ball, Brick brick){
+		int ballDirectionHorizontal = ball.getDirectionHorizontal();
+		int ballDirectionVertical = ball.getDirectionVertical();
+		double ballMinX = ball.getX();
+		double ballMaxX = ball.getX() + ball.getWidth();
+		double ballMinY = ball.getY();
+		double ballMaxY = ball.getY() + ball.getHeight();
+		double brickMinX = brick.getX();
+		double brickMaxX = brick.getX() + brick.getWidth();
+		double brickMinY = brick.getY();
+		double brickMaxY = brick.getY() + brick.getHeight();
+		
+		// check for hit on the upper edge
+		if (ballDirectionVertical > 0 && ballMaxY >= brickMinY && ballMinY <= brickMaxY && ballMaxX <= brickMaxX && ballMinX >= brickMinX){
+			int type = brick.hitBrick();
+			increaseScore(type);
+			ball.ballBounceVertical();
+		}
+		// check for hit on the lower edge
+		else if (ballDirectionVertical < 0 && ballMinY <= brickMaxY && ballMaxY >= brickMaxY && ballMaxX <= brickMaxX && ballMinX >= brickMinX){
+			int type = brick.hitBrick();
+			increaseScore(type);
+			ball.ballBounceVertical();
+		}
+		// check for hit on the left edge
+		else if (ballDirectionHorizontal > 0 && ballMaxX >= brickMinX && ballMinX <= brickMinX && ballMaxY <= brickMaxY && ballMinY >= brickMinY){
+			int type = brick.hitBrick();
+			increaseScore(type);
+			ball.ballBounceHorizontal();
+		}
+		// check for hit on the left edge
+		else if (ballDirectionHorizontal < 0 && ballMinX <= brickMaxX && ballMaxX >= brickMaxX && ballMaxY <= brickMaxY && ballMinY >= brickMinY){
+			int type = brick.hitBrick();
+			increaseScore(type);
+			ball.ballBounceHorizontal();
+		}
+	}
+	
+	private void increaseScore(int type){
+		switch (type){
+		case 1:
+			score += 100;
+			break;
+		case 2:
+			score += 200;
+			break;
+		case 3:
+			score += 300;
+			break;
+		}
+		currentScore.setText("Current Score: "+ score);
 	}
 	
 	private void dropPowerup(){
@@ -361,9 +435,8 @@ public class GameWorld {
 	
 	private void endOfLife(){
 		lives--;
+		score = 0;
 		if (!isDead()){
-			remainingLives.setText("Remaining lives: " + lives);
-			
 			setupFixedItems();
 			setupMovableItems(levelLayout);
 			addNodesToRoot(rootLevel);	
