@@ -92,22 +92,22 @@ public class Brick {
 	}
 	
 	public int hitBrick(){
-		toBeRemoved = true;
-		return type;
-//		if (type == 1){
-//			toBeRemoved = true;
-//			return type;
-//		}
-//		else if (type == 2){
-//			Image image = new Image(getClass().getClassLoader().getResourceAsStream(BRICK1_IMAGE));
-//			brick.setImage(image);
-//			return (type--);
-//		}
-//		else{
-//			Image image = new Image(getClass().getClassLoader().getResourceAsStream(BRICK2_IMAGE));
-//			brick.setImage(image);
-//			return (type--);
-//		}
+//		toBeRemoved = true;
+//		return type;
+		if (type == 1){
+			toBeRemoved = true;
+			return type;
+		}
+		else if (type == 2){
+			Image image = new Image(getClass().getClassLoader().getResourceAsStream(BRICK1_IMAGE));
+			brick.setImage(image);
+			return (type--);
+		}
+		else{
+			Image image = new Image(getClass().getClassLoader().getResourceAsStream(BRICK2_IMAGE));
+			brick.setImage(image);
+			return (type--);
+		}
 	}
 	
 	// used in level 3

@@ -1,6 +1,5 @@
 package breakout;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
@@ -165,10 +164,8 @@ public class GameWorld {
 		
 	private void readFileInput(String inputPath, ArrayList<Integer> outputList){
 		outputList.clear();
-		File file = new File(inputPath);
-		Scanner sc = null;
+		Scanner sc = new Scanner(getClass().getClassLoader().getResourceAsStream(inputPath));
 		try{
-			sc = new Scanner(file);
 			while (sc.hasNextLine()){
 				outputList.add(sc.nextInt());
 			}
@@ -254,7 +251,7 @@ public class GameWorld {
 		}
 		else if (event.getCode() == KeyCode.R){
 			stopGameLoop();
-			resetGameArguments();
+			score = 0;
 			initializeLevel(level);
 		}
 		else if (event.getCode() == KeyCode.B){
@@ -537,7 +534,7 @@ public class GameWorld {
 		powerup.setRemovalMark();
 		switch (powerup.getType()){
 		case 1:
-			speedUpBall(1.5);
+			speedUpBall(1.2);
 			break;
 		case 2:
 			splitBall(3);
@@ -574,7 +571,9 @@ public class GameWorld {
 	}
 
 	private void speedUpBall(double times) {
-		paddle.setSpeed(times);
+		for (Ball ball: balls){
+			ball.setSpeed(times);
+		}
 	}
 
 	private void endOfLife(){
