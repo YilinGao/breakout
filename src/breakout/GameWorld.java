@@ -87,7 +87,7 @@ public class GameWorld {
 		start = new Button("Click to start game!");
 		start.setLayoutX(50);
 		start.setLayoutY(400);
-		start.setOnMouseReleased(e -> initializeLevel(3));
+		start.setOnMouseReleased(e -> initializeLevel(1));
 		rootWelcome.getChildren().add(gameTitle);
 		rootWelcome.getChildren().add(instructions);
 		rootWelcome.getChildren().add(tips);
@@ -138,8 +138,6 @@ public class GameWorld {
 	}
 	
 	private void initializeResultPage(){
-		stopGameLoop();
-		
 		rootResult = new Group();
 		resultScene = new Scene(rootResult, WIDTH, HEIGHT, BACKGROUND);
 		
@@ -286,11 +284,17 @@ public class GameWorld {
 			ballHitOnAllBricks();
 			ballFallDown();			
 			if (isLevelEnd()){
-				initializeLevel(++level);
+				stopGameLoop();
+				if (level < 3)
+					initializeLevel(++level);
+				else
+					initializeResultPage();
 			}
 		}
-		for (Brick brick: bricks){
-			brick.brickMove(elapsedTime);
+		if (level == 3){
+			for (Brick brick: bricks){
+				brick.brickMove(elapsedTime);
+			}
 		}
 		currentScene.setOnKeyPressed(e -> handleKeyInput(e.getCode(), elapsedTime));
 	}
@@ -337,7 +341,7 @@ public class GameWorld {
 			double ballMaxX = ball.getX() + ball.getWidth();
 			double ballMinY = ball.getY();
 			double ballMaxY = ball.getY() + ball.getHeight();
-			System.out.println("ballMinX: " + ballMinX + ", ballMaxX: " + ballMaxX + ", ballMinY: " + ballMinY + ", ballMaxY: " + ballMaxY);
+//			System.out.println("ballMinX: " + ballMinX + ", ballMaxX: " + ballMaxX + ", ballMinY: " + ballMinY + ", ballMaxY: " + ballMaxY);
 			if ((ballMinX < 0 && ballMaxX > 0) || (ballMaxX > WIDTH && ballMinX < WIDTH))
 				ball.ballBounceHorizontal();
 			else if (ballMinY < 0 && ballMaxY > 0)
@@ -442,6 +446,7 @@ public class GameWorld {
 			addNodesToRoot(rootLevel);	
 		}
 		else{
+			stopGameLoop();
 			initializeResultPage();
 		}
 	}
