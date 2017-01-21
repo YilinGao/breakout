@@ -5,7 +5,8 @@ import javafx.scene.image.ImageView;
 
 public class Paddle {
 	private static final String PADDLE_IMAGE = "paddle.gif";
-	private static final int PADDLE_SPEED = 1600;
+	private int paddle_speed = 1600;
+	private boolean sticky = false;
 	private ImageView paddle;
 	
 	public Paddle(){
@@ -29,12 +30,28 @@ public class Paddle {
 		return paddle.getBoundsInParent().getWidth();
 	}
 	
+	public double getHeight(){
+		return paddle.getBoundsInParent().getHeight();
+	}
+	
+	public boolean getSticky(){
+		return sticky;
+	}
+	
 	public void setX(double x){
 		paddle.setX(x);
 	}
 	
 	public void setY(double y){
 		paddle.setY(y);
+	}
+	
+	public void setSpeed(double times){
+		paddle_speed *= times;
+	}
+	
+	public void setSticky(boolean status){
+		sticky = status;
 	}
 	
 	public void paddleMove(int direction, double elapsedTime){
@@ -45,7 +62,7 @@ public class Paddle {
 			paddle.setX(GameWorld.WIDTH + getX());
 		}
 		else{
-			paddle.setX(getX() + PADDLE_SPEED * direction * elapsedTime);
+			paddle.setX(getX() + paddle_speed * direction * elapsedTime);
 		}
 	}
 }
