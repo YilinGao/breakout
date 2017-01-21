@@ -42,6 +42,9 @@ public class Brick {
 		}
 		Image image = new Image(getClass().getClassLoader().getResourceAsStream(path));
 		brick = new ImageView(image);
+		brick.setFitWidth(70);
+		brick.setPreserveRatio(false);
+		brick.setSmooth(true);
 		layer = l;
 		indexInLayer = i;
 		totalBricksInLayer = n;
@@ -113,6 +116,21 @@ public class Brick {
 		if (layer % 4 == 2){
 			direction = -1;
 		}
-		brick.setX(getX() + direction * elapsedTime * BRICK_SPEED);
+		if (layer % 4 == 0){
+			if (getX() >= GameWorld.WIDTH / 2 + getWidth() * totalBricksInLayer / 2){
+				brick.setX(GameWorld.WIDTH / 2 - getWidth() * totalBricksInLayer / 2 + direction * elapsedTime * BRICK_SPEED);
+			}
+			else{
+				brick.setX(getX() + direction * elapsedTime * BRICK_SPEED);
+			}
+		}
+		else if (layer % 4 == 2){
+			if (getX() <= GameWorld.WIDTH / 2 - getWidth() * totalBricksInLayer / 2 - getWidth()){
+				brick.setX(GameWorld.WIDTH / 2 + getWidth() * totalBricksInLayer / 2 - getWidth() + direction * elapsedTime * BRICK_SPEED);
+			}
+			else{
+				brick.setX(getX() + direction * elapsedTime * BRICK_SPEED); 
+			}
+		}
 	}
 }

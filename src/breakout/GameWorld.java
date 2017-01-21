@@ -44,6 +44,7 @@ public class GameWorld {
 	private Text remainingLives;
 	private Text currentLevel;
 	private Text currentScore;
+	private Text resultReport;
 	private Paddle paddle;
 	private ArrayList<Ball> balls = new ArrayList<Ball>();
 	private int numOfBricks, currentNumOfBricks;
@@ -87,7 +88,7 @@ public class GameWorld {
 		start = new Button("Click to start game!");
 		start.setLayoutX(50);
 		start.setLayoutY(400);
-		start.setOnMouseReleased(e -> initializeLevel(1));
+		start.setOnMouseReleased(e -> initializeLevel(3));
 		rootWelcome.getChildren().add(gameTitle);
 		rootWelcome.getChildren().add(instructions);
 		rootWelcome.getChildren().add(tips);
@@ -141,17 +142,22 @@ public class GameWorld {
 		rootResult = new Group();
 		resultScene = new Scene(rootResult, WIDTH, HEIGHT, BACKGROUND);
 		
-		Text report = new Text();
+		resultReport = new Text();
 		if (isDead()){
-			report.setText("Sorry you lose :(");
+			resultReport.setText("Sorry you lose :(");
 		}
 		else{
-			report.setText("Wow you win! :)");
+			resultReport.setText("Wow you win! :)\nYour score is " + score + ".");
 		}
-		report.setX(50);
-		report.setY(300);
+		resultReport.setX(50);
+		resultReport.setY(300);
+		lives = 3;
+		score = 0;
+		start.setText("Have another try?");
+		start.setOnMouseReleased(e -> initializeLevel(1));
 		
-		rootResult.getChildren().add(report);
+		rootResult.getChildren().add(resultReport);
+		rootResult.getChildren().add(start);
 		theStage.setScene(resultScene);
 		currentScene = resultScene;
 	}
@@ -324,12 +330,12 @@ public class GameWorld {
 			double paddleOneThirdsX = paddle.getX() + paddle.getWidth() / 3;
 			double paddleTwoThirdsX = paddle.getX() + paddle.getWidth() * 2 / 3;
 			if (ballMaxY >= paddleMinY){
-				if ((ballCenterX >= paddleMinX && ballCenterX <= paddleOneThirdsX) || (ballCenterX <= paddleMaxX && ballCenterX >= paddleTwoThirdsX)){
-					ball.ballBounceHorizontal();
+				if ((ballCenterX >= paddleMinX && ballCenterX <= paddleOneThirdsX) || (ballCenterX <= paddleMaxX && ballCenterX >= paddleTwoThirdsX)){				
 					ball.ballBounceVertical();
 				}
 				else if (ballCenterX > paddleOneThirdsX && ballCenterX < paddleTwoThirdsX){
 					ball.ballBounceVertical();
+					ball.ballBounceHorizontal();
 				}
 			}
 		}
