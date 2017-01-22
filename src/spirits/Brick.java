@@ -54,12 +54,20 @@ public class Brick {
 		return brick;
 	}
 	
-	public double getX(){
+	public double getMinX(){
 		return brick.getBoundsInParent().getMinX();
 	}
 	
-	public double getY(){
+	public double getMaxX(){
+		return brick.getBoundsInParent().getMaxX();
+	}
+	
+	public double getMinY(){
 		return brick.getBoundsInParent().getMinY();
+	}
+	
+	public double getMaxY(){
+		return brick.getBoundsInParent().getMaxY();
 	}
 	
 	public double getWidth(){
@@ -110,19 +118,19 @@ public class Brick {
 			direction = -1;
 		}
 		if (layer % 4 == 0){
-			if (getX() >= GameWorld.WIDTH / 2 + getWidth() * totalBricksInLayer / 2){
+			if (getMinX() >= GameWorld.WIDTH / 2 + getWidth() * totalBricksInLayer / 2){
 				brick.setX(GameWorld.WIDTH / 2 - getWidth() * totalBricksInLayer / 2 + direction * elapsedTime * BRICK_SPEED);
 			}
 			else{
-				brick.setX(getX() + direction * elapsedTime * BRICK_SPEED);
+				brick.setX(getMinX() + direction * elapsedTime * BRICK_SPEED);
 			}
 		}
 		else if (layer % 4 == 2){
-			if (getX() <= GameWorld.WIDTH / 2 - getWidth() * totalBricksInLayer / 2 - getWidth()){
+			if (getMinX() <= GameWorld.WIDTH / 2 - getWidth() * totalBricksInLayer / 2 - getWidth()){
 				brick.setX(GameWorld.WIDTH / 2 + getWidth() * totalBricksInLayer / 2 - getWidth() + direction * elapsedTime * BRICK_SPEED);
 			}
 			else{
-				brick.setX(getX() + direction * elapsedTime * BRICK_SPEED); 
+				brick.setX(getMinX() + direction * elapsedTime * BRICK_SPEED); 
 			}
 		}
 	}

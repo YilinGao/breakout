@@ -27,12 +27,20 @@ public class Ball {
 		return ball;
 	}
 	
-	public double getX(){
+	public double getMinX(){
 		return ball.getBoundsInParent().getMinX();
 	}
 	
-	public double getY(){
+	public double getMaxX(){
+		return ball.getBoundsInParent().getMaxX();
+	}
+	
+	public double getMinY(){
 		return ball.getBoundsInParent().getMinY();
+	}
+	
+	public double getMaxY(){
+		return ball.getBoundsInParent().getMaxY();
 	}
 	
 	public double getWidth(){
@@ -81,7 +89,7 @@ public class Ball {
 	}
 
 	public void ballMoveWithPaddle(Paddle paddle){
-		double paddleCenterX = paddle.getX() + paddle.getWidth() / 2;
+		double paddleCenterX = (paddle.getMinX() + paddle.getMaxX()) / 2;
 		ball.setX(paddleCenterX - getWidth() / 2);
 		ball.setY(480);
 	}

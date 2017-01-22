@@ -390,7 +390,7 @@ public class GameWorld {
 				powerup.powerupMove(elapsedTime);
 			collisionDetector.ballBounceOnPaddle(balls, paddle);
 			collisionDetector.ballBounceOnWalls(balls);
-			collisionDetector.ballHitOnAllBricks(balls, bricks);
+			collisionDetector.ballHitAllBricks(balls, bricks);
 			collisionDetector.ballFallDown(balls);	
 			collisionDetector.powerupHitPaddle(powerups, paddle);
 			lifeEnd();

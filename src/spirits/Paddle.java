@@ -19,12 +19,20 @@ public class Paddle {
 		return paddle;
 	}
 	
-	public double getX(){
+	public double getMinX(){
 		return paddle.getBoundsInParent().getMinX();
 	}
 	
-	public double getY(){
+	public double getMaxX(){
+		return paddle.getBoundsInParent().getMaxX();
+	}
+	
+	public double getMinY(){
 		return paddle.getBoundsInParent().getMinY();
+	}
+	
+	public double getMaxY(){
+		return paddle.getBoundsInParent().getMaxY();
 	}
 	
 	public double getWidth(){
@@ -60,14 +68,14 @@ public class Paddle {
 	}
 	
 	public void paddleMove(int direction, double elapsedTime){
-		if (getX() >= GameWorld.WIDTH){
-			paddle.setX(0 + getX() - GameWorld.WIDTH);
+		if (getMinX() >= GameWorld.WIDTH){
+			paddle.setX(0 + getMinX() - GameWorld.WIDTH);
 		}
-		else if (getX() + getWidth() <= 0){
-			paddle.setX(GameWorld.WIDTH + getX());
+		else if (getMinX() + getWidth() <= 0){
+			paddle.setX(GameWorld.WIDTH + getMinX());
 		}
 		else{
-			paddle.setX(getX() + paddle_speed * direction * elapsedTime);
+			paddle.setX(getMinX() + paddle_speed * direction * elapsedTime);
 		}
 	}
 }

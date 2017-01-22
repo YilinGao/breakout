@@ -5,7 +5,7 @@
 	1. brick layouts of 3 levels
 	2. 3 types of bricks
 	3. ball speed random initialization
-	4. first 2 functions of paddle	
+	4. functions 2 and 3 of paddle	
 	5. 4 types of power-ups
 	6. 3 status display
 	7. 3 types of cheat keys
@@ -23,5 +23,6 @@
 	5. Change the function of the first type of power-up `S` to increase the speed of ball.
 	6. Change the name of the second type of power-up from `M` to `B`.
 	7. Change the cheat key `SPACE` into `B`. Because `SPACE` is responsible for starting the ball.
+	8. Change paddle function 1 to bounce normally when the ball hits on the upper, left and right surfaces of the paddle, and bounce in the original direction when the ball hits on the upper corners of the paddle.
 	
 

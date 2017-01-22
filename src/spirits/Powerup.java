@@ -41,8 +41,8 @@ public class Powerup {
 		Random rn = new Random();
 		powerup_speed = rn.nextInt(101) + 50;
 		
-		double x = brick.getX() + brick.getWidth() / 2;
-		double y = brick.getY() + brick.getHeight();
+		double x = brick.getMinX() + brick.getWidth() / 2;
+		double y = brick.getMinY() + brick.getHeight();
 		powerup.setX(x);
 		powerup.setY(y);
 	}
@@ -55,12 +55,20 @@ public class Powerup {
 		return type;
 	}
 	
-	public double getX(){
+	public double getMinX(){
 		return powerup.getBoundsInParent().getMinX();
 	}
 	
-	public double getY(){
+	public double getMaxX(){
+		return powerup.getBoundsInParent().getMaxX();
+	}
+	
+	public double getMinY(){
 		return powerup.getBoundsInParent().getMinY();
+	}
+
+	public double getMaxY(){
+		return powerup.getBoundsInParent().getMaxY();
 	}
 	
 	public double getWidth(){
@@ -75,7 +83,7 @@ public class Powerup {
 		return toBeRemoved;
 	}
 	public void powerupMove(double elapsedTime){
-		powerup.setY(getY() + elapsedTime * powerup_speed);
+		powerup.setY(getMinY() + elapsedTime * powerup_speed);
 	}
 	
 	public void setRemovalMark(){
