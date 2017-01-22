@@ -58,6 +58,7 @@ public class GameWorld {
 	private ArrayList<Integer> levelLayout = new ArrayList<>();
 	
 	private boolean started = false;
+	private boolean paused = false;
 	private int lives = 3;
 	private int level;
 	private int score = 0;
@@ -247,7 +248,10 @@ public class GameWorld {
 	
 	private void handleKeyInputsScene(KeyEvent event){
 		if (event.getCode() == KeyCode.SPACE) {
-			started = true;
+			if (!started)
+				started = true;
+			else
+				paused = ! paused;
 		}
 		else if (event.getCode() == KeyCode.R){
 			stopGameLoop();
@@ -310,7 +314,7 @@ public class GameWorld {
 	 * @param elapsedTime: the duration of each frame
 	 */
 	private void actionsPerFrame(double elapsedTime){
-		if (started){
+		if (started & !paused){
 			for (Ball ball: balls){
 				if (!ball.getSticked()){
 					ball.ballMove(elapsedTime);		
@@ -349,10 +353,13 @@ public class GameWorld {
 		else if (code == KeyCode.RIGHT){
 			direction = 1;
 		}			
-		paddle.paddleMove(direction, elapsedTime);
-		for (Ball ball : balls)
-			if (!started || (started && ball.getSticked()))
-				ball.ballMoveWithPaddle(paddle);
+		
+		if (!paused) {
+			paddle.paddleMove(direction, elapsedTime);
+			for (Ball ball : balls)
+				if (!started || (started && ball.getSticked()))
+					ball.ballMoveWithPaddle(paddle);
+		}
 	}
 	
 	private void ballBounceOnPaddle(){
