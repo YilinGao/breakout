@@ -27,18 +27,19 @@ public class Collision {
 	
 	public void ballBounceOnPaddle(ArrayList<Ball> balls, Paddle paddle){
 		for (Ball ball: balls){
-			double ballCenterX = ball.getX() + ball.getWidth() / 2;
-			double paddleMinX = paddle.getX();
-			double paddleMaxX = paddle.getX() + paddle.getWidth();
-			double ballMinY = ball.getY();
-			double ballMaxY = ball.getY() + ball.getHeight();
-			double paddleMinY = paddle.getY();
-			double paddleOneThirdsX = paddle.getX() + paddle.getWidth() / 3;
-			double paddleTwoThirdsX = paddle.getX() + paddle.getWidth() * 2 / 3;
+			double ballCenterX = ball.getBall().getBoundsInParent().getMinX() + ball.getBall().getBoundsInParent().getWidth() / 2;
+			double paddleMinX = paddle.getPaddle().getBoundsInParent().getMinX();
+			double paddleMaxX = paddle.getPaddle().getBoundsInParent().getMaxX();
+			double ballMinY = ball.getBall().getBoundsInParent().getMinY();
+			double ballMaxY = ball.getBall().getBoundsInParent().getMaxY();
+			double paddleMinY = paddle.getPaddle().getBoundsInParent().getMinY();
+			double paddleOneThirdsX = paddle.getPaddle().getBoundsInParent().getMinX() + paddle.getPaddle().getBoundsInParent().getWidth() / 3;
+			double paddleTwoThirdsX = paddle.getPaddle().getBoundsInParent().getMinX() + paddle.getPaddle().getBoundsInParent().getWidth() * 2 / 3;
 			if (ballMaxY >= paddleMinY && ballMinY <= paddleMinY){
 				if ((ballCenterX >= paddleMinX && ballCenterX <= paddleOneThirdsX) || (ballCenterX <= paddleMaxX && ballCenterX >= paddleTwoThirdsX)){				
 					if (!paddle.getSticky()){
 						ball.ballBounceVertical();
+						ball.ballBounceHorizontal();
 					}
 					else{
 						ball.setSticked(true);
@@ -48,7 +49,6 @@ public class Collision {
 				else if (ballCenterX > paddleOneThirdsX && ballCenterX < paddleTwoThirdsX){
 					if (!paddle.getSticky()){
 						ball.ballBounceVertical();
-						ball.ballBounceHorizontal();
 					}
 					else{
 						ball.setSticked(true);
@@ -61,10 +61,10 @@ public class Collision {
 	
 	public void ballBounceOnWalls(ArrayList<Ball> balls){
 		for (Ball ball: balls){
-			double ballMinX = ball.getX();
-			double ballMaxX = ball.getX() + ball.getWidth();
-			double ballMinY = ball.getY();
-			double ballMaxY = ball.getY() + ball.getHeight();
+			double ballMinX = ball.getBall().getBoundsInParent().getMinX();
+			double ballMaxX = ball.getBall().getBoundsInParent().getMaxX();
+			double ballMinY = ball.getBall().getBoundsInParent().getMinY();
+			double ballMaxY = ball.getBall().getBoundsInParent().getMaxY();
 			if ((ballMinX < 0 && ballMaxX > 0) || (ballMaxX > GameWorld.WIDTH && ballMinX < GameWorld.WIDTH))
 				ball.ballBounceHorizontal();
 			else if (ballMinY < 0 && ballMaxY > 0)
@@ -74,7 +74,7 @@ public class Collision {
 
 	public void ballFallDown(ArrayList<Ball> balls){
 		for (Ball ball: balls){
-			double ballMinY = ball.getY();
+			double ballMinY = ball.getBall().getBoundsInParent().getMinY();
 			if (ballMinY >= GameWorld.HEIGHT){
 				ball.setRemovalMark();
 				gameWorld.getRootLevel().getChildren().remove(ball.getBall());
@@ -106,14 +106,14 @@ public class Collision {
 	private void ballHitBrick(Ball ball, Brick brick){
 		int ballDirectionHorizontal = ball.getDirectionHorizontal();
 		int ballDirectionVertical = ball.getDirectionVertical();
-		double ballMinX = ball.getX();
-		double ballMaxX = ball.getX() + ball.getWidth();
-		double ballMinY = ball.getY();
-		double ballMaxY = ball.getY() + ball.getHeight();
-		double brickMinX = brick.getX();
-		double brickMaxX = brick.getX() + brick.getWidth();
-		double brickMinY = brick.getY();
-		double brickMaxY = brick.getY() + brick.getHeight();
+		double ballMinX = ball.getBall().getBoundsInParent().getMinX();
+		double ballMaxX = ball.getBall().getBoundsInParent().getMaxX();
+		double ballMinY = ball.getBall().getBoundsInParent().getMinY();
+		double ballMaxY = ball.getBall().getBoundsInParent().getMaxY();
+		double brickMinX = brick.getBrick().getBoundsInParent().getMinX();
+		double brickMaxX = brick.getBrick().getBoundsInParent().getMaxX();
+		double brickMinY = brick.getBrick().getBoundsInParent().getMinY();
+		double brickMaxY = brick.getBrick().getBoundsInParent().getMaxY();
 		
 		// check for hit on the upper edge
 		if (ballDirectionVertical > 0 && ballMaxY >= brickMinY && ballMinY <= brickMaxY && ballMaxX <= brickMaxX && ballMinX >= brickMinX){
@@ -172,12 +172,12 @@ public class Collision {
 	
 	public void powerupHitPaddle(ArrayList<Powerup> powerups, Paddle paddle) {
 		for (Powerup powerup: powerups){
-			double powerupCenterX = powerup.getX() + powerup.getWidth() / 2;
-			double powerupMinY = powerup.getY();
-			double powerupMaxY = powerup.getY() + powerup.getHeight();
-			double paddleMinX = paddle.getX();
-			double paddleMaxX = paddle.getX() + paddle.getWidth();
-			double paddleMinY = paddle.getY();
+			double powerupCenterX = powerup.getPowerup().getBoundsInParent().getMinX() + powerup.getPowerup().getBoundsInParent().getWidth() / 2;
+			double powerupMinY = powerup.getPowerup().getBoundsInParent().getMinY();
+			double powerupMaxY = powerup.getPowerup().getBoundsInParent().getMaxY();
+			double paddleMinX = paddle.getPaddle().getBoundsInParent().getMinX();
+			double paddleMaxX = paddle.getPaddle().getBoundsInParent().getMaxX();
+			double paddleMinY = paddle.getPaddle().getBoundsInParent().getMinY();
 			if (powerupMaxY >= paddleMinY && powerupMinY <= paddleMinY){
 				if (powerupCenterX >= paddleMinX && powerupCenterX <= paddleMaxX){
 					powerupEffect(powerup);
