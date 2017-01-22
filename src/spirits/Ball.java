@@ -8,8 +8,8 @@ import javafx.scene.image.ImageView;
 public class Ball {
 
 	private static final String BALL_IMAGE = "ball.gif";
-	private int ball_speed_horizontal;
-	private int ball_speed_vertical;
+	private int ballSpeedHorizontal;
+	private int ballSpeedVertical;
 	private boolean toBeRemoved = false;
 	private boolean sticked = false;
 	private ImageView ball;
@@ -18,8 +18,9 @@ public class Ball {
 		Image image = new Image(getClass().getClassLoader().getResourceAsStream(BALL_IMAGE));
 		ball = new ImageView(image);
 		Random rn = new Random();
-		ball_speed_horizontal = rn.nextInt(50) + 100;
-		ball_speed_vertical = - rn.nextInt(50) - 100;
+		ballSpeedHorizontal = rn.nextInt(50) + 100;
+		ballSpeedHorizontal *= ((rn.nextInt(2) == 0) ? -1 : 1);
+		ballSpeedVertical = - rn.nextInt(50) - 100;
 	}
 	
 	public ImageView getBall(){
@@ -43,15 +44,11 @@ public class Ball {
 	}
 	
 	public int getDirectionHorizontal(){
-		if (ball_speed_horizontal > 0)
-			return 1;
-		return -1;
+		return ((ballSpeedHorizontal > 0) ? 1: -1);
 	}
 	
 	public int getDirectionVertical(){
-		if (ball_speed_vertical > 0)
-			return 1;
-		return -1;
+		return ((ballSpeedVertical > 0) ? 1: -1);
 	}
 	
 	public boolean getRemovalMark(){
@@ -79,16 +76,10 @@ public class Ball {
 	}
 	
 	public void setSpeed(double times){
-		ball_speed_horizontal *= times;
-		ball_speed_horizontal *= times;
+		ballSpeedHorizontal *= times;
+		ballSpeedHorizontal *= times;
 	}
-	public void ballResetInitialDirection(){
-		if (ball_speed_horizontal < 0)
-			ball_speed_horizontal *= -1;
-		if (ball_speed_vertical > 0)
-			ball_speed_vertical *= -1;
-	}
-	
+
 	public void ballMoveWithPaddle(Paddle paddle){
 		double paddleCenterX = paddle.getX() + paddle.getWidth() / 2;
 		ball.setX(paddleCenterX - getWidth() / 2);
@@ -96,15 +87,15 @@ public class Ball {
 	}
 	
 	public void ballMove(double elapsedTime){
-		ball.setX(ball.getX() + elapsedTime * ball_speed_horizontal);
-		ball.setY(ball.getY() + elapsedTime * ball_speed_vertical);
+		ball.setX(ball.getX() + elapsedTime * ballSpeedHorizontal);
+		ball.setY(ball.getY() + elapsedTime * ballSpeedVertical);
 	}
 	
 	public void ballBounceHorizontal(){
-		ball_speed_horizontal *= -1;
+		ballSpeedHorizontal *= -1;
 	}
 	
 	public void ballBounceVertical(){
-		ball_speed_vertical *= -1;
+		ballSpeedVertical *= -1;
 	}
 }

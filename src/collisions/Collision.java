@@ -17,6 +17,10 @@ public class Collision {
 	ArrayList<Powerup> powerupsToBeRemoved = new ArrayList<>();
 	GameWorld gameWorld;
 	
+	/**
+	 * constructor of Collision class
+	 * @param originalGameWorld: the GameWorld instant
+	 */
 	public Collision(GameWorld originalGameWorld){
 		gameWorld = originalGameWorld;
 	}

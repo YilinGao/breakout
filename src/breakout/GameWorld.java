@@ -132,7 +132,7 @@ public class GameWorld {
 		start = new Button("Click or press SPACE to start game!");
 		start.setLayoutX(50);
 		start.setLayoutY(400);
-		start.setOnMouseReleased(e -> initializeLevel(3));
+		start.setOnMouseReleased(e -> initializeLevel(1));
 		start.setOnKeyReleased(e -> handleStartGameKeyInputs(e));
 		rootWelcome.getChildren().add(gameTitle);
 		rootWelcome.getChildren().add(instructions);
@@ -143,6 +143,10 @@ public class GameWorld {
 		stage.show();
 	}
 	
+	/**
+	 * initialize a certain level scene
+	 * @param targetLevel: the level to be initialized
+	 */
 	public void initializeLevel(int targetLevel){
 		level = targetLevel;
 		rootLevel = new Group();
@@ -158,6 +162,9 @@ public class GameWorld {
 		beginGameLoop();
 	}
 
+	/**
+	 * initialize the result scene
+	 */
 	private void initializeResultPage(){
 		rootResult = new Group();
 		resultScene = new Scene(rootResult, WIDTH, HEIGHT, BACKGROUND);
@@ -182,7 +189,7 @@ public class GameWorld {
 	
 	private void handleStartGameKeyInputs(KeyEvent event){
 		if (event.getCode() == KeyCode.SPACE) {
-			initializeLevel(3);
+			initializeLevel(1);
 		}
 	}
 
@@ -224,6 +231,9 @@ public class GameWorld {
 		}
 	}
 
+	/**
+	 * set up status display: score, level, lives
+	 */
 	private void setupFixedItems(){
 		currentScore = new Text("Current Score: "+ score);
 		currentScore.setX(30);
@@ -238,6 +248,9 @@ public class GameWorld {
 		remainingLives.setY(550);
 	}
 	
+	/**
+	 * set up balls, paddle
+	 */
 	private void setupMovableItems(){
 		started = false;
 
@@ -246,7 +259,6 @@ public class GameWorld {
 		
 		newBall.setX(WIDTH / 2 - newBall.getBall().getBoundsInParent().getWidth() / 2);
 		newBall.setY(480);
-		newBall.ballResetInitialDirection();
 		balls.clear();
 		balls.add(newBall);
 
@@ -254,6 +266,10 @@ public class GameWorld {
 		paddle.setY(newBall.getBall().getBoundsInParent().getMaxY());
 	}
 	
+	/**
+	 * set up bricks
+	 * @param bricksLayout: the brick layout read from text file input
+	 */
 	private void setupBricks(ArrayList<Integer> bricksLayout){
 		int currentLayer = 0;
 		Random rd = new Random();

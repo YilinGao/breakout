@@ -4,12 +4,15 @@
 
 	1. brick layouts of 3 levels
 	2. 3 types of bricks
-	3. first 2 functions of paddle	
-	4. 4 types of power-ups
-	5. 3 status display
-	6. 3 types of cheat keys
-	7. splash screen
-	8. restart button at the result page
+	3. ball speed random initialization
+	4. first 2 functions of paddle	
+	5. 4 types of power-ups
+	6. 3 status display
+	7. 3 types of cheat keys
+	8. splash screen
+	9. restart button at the result page
+	10. When starting a new life, start from the original place.
+	11. Press `SPACE` to pause and restart during the game.
 
 * Targets changed or discarded:
 
