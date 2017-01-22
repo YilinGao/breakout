@@ -90,10 +90,11 @@ public class GameWorld {
 		gameTitle = new Text(50, 100, "Breakout\nBy Sandy");			
 		instructions = new Text(50, 200, "Press SPACE to start.\nUse \"<-\" and \"->\" to control the paddle.\nYou have 3 lives to start.");
 		tips = new Text(50, 300, "Tips:\nGet control of your paddle!\nGood luck!");
-		start = new Button("Click to start game!");
+		start = new Button("Click or press SPACE to start game!");
 		start.setLayoutX(50);
 		start.setLayoutY(400);
 		start.setOnMouseReleased(e -> initializeLevel(1));
+		start.setOnKeyReleased(e -> handleStartGameKeyInputs(e));
 		rootWelcome.getChildren().add(gameTitle);
 		rootWelcome.getChildren().add(instructions);
 		rootWelcome.getChildren().add(tips);
@@ -133,12 +134,19 @@ public class GameWorld {
 		resultReport.setX(50);
 		resultReport.setY(300);
 		resetGameArguments();
-		start.setText("Have another try?");
+		start.setText("Have another try? Click or press SPACE.");
 		start.setOnMouseReleased(e -> initializeLevel(1));
+		start.setOnKeyReleased(e -> handleStartGameKeyInputs(e));
 		rootResult.getChildren().add(resultReport);
 		rootResult.getChildren().add(start);
 		theStage.setScene(resultScene);
 		currentScene = resultScene;
+	}
+	
+	private void handleStartGameKeyInputs(KeyEvent event){
+		if (event.getCode() == KeyCode.SPACE) {
+			initializeLevel(1);
+		}
 	}
 
 	private void resetGameArguments() {
