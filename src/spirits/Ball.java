@@ -1,4 +1,4 @@
-package breakout;
+package spirits;
 
 import java.util.Random;
 

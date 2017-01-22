@@ -1,5 +1,6 @@
-package breakout;
+package spirits;
 
+import breakout.GameWorld;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
@@ -36,6 +37,10 @@ public class Paddle {
 	
 	public boolean getSticky(){
 		return sticky;
+	}
+	
+	public void initializePaddle(){
+		
 	}
 	
 	public void setX(double x){

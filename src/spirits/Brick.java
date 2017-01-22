@@ -1,5 +1,6 @@
-package breakout;
+package spirits;
 
+import breakout.GameWorld;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
@@ -10,7 +11,6 @@ public class Brick {
 	private int layer;
 	private int indexInLayer;
 	private int totalBricksInLayer;
-	private int index;
 	private boolean toBeRemoved = false;
 
 	private static final int BRICK_SPEED = 100;
@@ -26,7 +26,7 @@ public class Brick {
 	 * @param n: number of bricks in the layer
 	 * @param m: the index in all bricks (starting from 0)
 	 */
-	public Brick(int rn, int l, int i, int n, int m){
+	public Brick(int rn, int l, int i, int n){
 		String path = "";
 		if (rn <= 5){
 			type = 1;
@@ -48,7 +48,6 @@ public class Brick {
 		layer = l;
 		indexInLayer = i;
 		totalBricksInLayer = n;
-		index = m;
 	}
 	
 	public ImageView getBrick(){
@@ -71,10 +70,6 @@ public class Brick {
 		return brick.getBoundsInLocal().getHeight();
 	}
 	
-	public int getIndex(){
-		return index;
-	}
-	
 	public int getType(){
 		return type;
 	}
@@ -92,8 +87,6 @@ public class Brick {
 	}
 	
 	public int hitBrick(){
-//		toBeRemoved = true;
-//		return type;
 		if (type == 1){
 			toBeRemoved = true;
 			return type;

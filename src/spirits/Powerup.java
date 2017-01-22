@@ -1,4 +1,6 @@
-package breakout;
+package spirits;
+
+import java.util.Random;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -10,30 +12,34 @@ public class Powerup {
 	private static final String POWERUP_IMAGE3 = "paddlepower.gif";
 	private static final String POWERUP_IMAGE4 = "lifepower.gif";
 	
-	private int powerup_speed = 150;
+	private int powerup_speed;
 	private ImageView powerup;
 	private int type;
 	private boolean toBeRemoved = false;
 	
-	public Powerup(int theType, Brick brick){
-		type = theType;
+	public Powerup(double theType, Brick brick){
 		String path = POWERUP_IMAGE1;
-		switch (type){
-		case 1:
+		if (theType <= 0.1){
+			type = 1;
 			path = POWERUP_IMAGE1;
-			break;
-		case 2:
+		}
+		else if (theType <= 0.2){
+			type = 2;
 			path = POWERUP_IMAGE2;
-			break;
-		case 3:
+		}			
+		else if (theType <= 0.3){
+			type = 3;
 			path = POWERUP_IMAGE3;
-			break;
-		case 4:
+		}
+		else{
+			type = 4;
 			path = POWERUP_IMAGE4;
-			break;
 		}
 		Image image = new Image(getClass().getClassLoader().getResourceAsStream(path));
 		powerup = new ImageView(image);
+		
+		Random rn = new Random();
+		powerup_speed = rn.nextInt(101) + 50;
 		
 		double x = brick.getX() + brick.getWidth() / 2;
 		double y = brick.getY() + brick.getHeight();

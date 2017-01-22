@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
+import collisions.Collision;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
@@ -18,6 +19,10 @@ import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import spirits.Ball;
+import spirits.Brick;
+import spirits.Paddle;
+import spirits.Powerup;
 
 public class GameWorld {
 	private static final String title = "Breakout";
@@ -34,9 +39,9 @@ public class GameWorld {
 	
 	private Stage theStage;
 	private Group rootWelcome, rootLevel, rootResult;
-	private Scene currentScene;
 	private Scene welcomeScene, levelScene, resultScene;
 	
+	private Collision collisionDetector = new Collision(this);
 	private Button start;
 	private Text gameTitle;
 	private Text instructions;
@@ -47,13 +52,8 @@ public class GameWorld {
 	private Text resultReport;
 	private Paddle paddle;
 	private ArrayList<Ball> balls = new ArrayList<Ball>();
-	private ArrayList<Ball> ballsToBeAdded = new ArrayList<Ball>();
-	private ArrayList<Ball> ballsToBeRemoved = new ArrayList<Ball>();
-	private int numOfBricks;
 	private ArrayList<Brick> bricks = new ArrayList<Brick>();
-	private ArrayList<Brick> bricksToBeRemoved = new ArrayList<Brick>();
 	private ArrayList<Powerup> powerups = new ArrayList<Powerup>();
-	private ArrayList<Powerup> powerupsToBeRemoved = new ArrayList<Powerup>();
 	
 	private ArrayList<Integer> levelLayout = new ArrayList<>();
 	
@@ -75,6 +75,45 @@ public class GameWorld {
 	public GameWorld() {
 		millisecondDelay = 1000.0 / framesPerSecond;
 		secondDelay = 1.0 / framesPerSecond;
+	}	
+	
+	public Group getRootLevel(){
+		return rootLevel;
+	}
+	
+	public ArrayList<Ball> getBalls(){
+		return balls;
+	}
+	public Paddle getPaddle(){
+		return paddle;
+	}
+	
+	public ArrayList<Powerup> getPowerups(){
+		return powerups;
+	}
+	
+	public int getScore(){
+		return score;
+	}
+	
+	public int getLives(){
+		return lives;
+	}
+	
+	public void setScore(int newScore){
+		score = newScore;
+	}
+	
+	public void setLives(int newLives){
+		lives = newLives;
+	}
+	
+	public void setCurrentScore(String text){
+		currentScore.setText(text);
+	}
+	
+	public void setRemainingLives(String text){
+		remainingLives.setText(text);
 	}
 
 	/**
@@ -93,14 +132,13 @@ public class GameWorld {
 		start = new Button("Click or press SPACE to start game!");
 		start.setLayoutX(50);
 		start.setLayoutY(400);
-		start.setOnMouseReleased(e -> initializeLevel(1));
+		start.setOnMouseReleased(e -> initializeLevel(3));
 		start.setOnKeyReleased(e -> handleStartGameKeyInputs(e));
 		rootWelcome.getChildren().add(gameTitle);
 		rootWelcome.getChildren().add(instructions);
 		rootWelcome.getChildren().add(tips);
 		rootWelcome.getChildren().add(start);
 		stage.setScene(welcomeScene);
-		currentScene = welcomeScene;
 		stage.setTitle(title);
 		stage.show();
 	}
@@ -111,11 +149,11 @@ public class GameWorld {
 		levelScene = new Scene(rootLevel, WIDTH, HEIGHT, BACKGROUND);
 		chooseAndReadInput();
 		setupFixedItems();
-		setupMovableItems(levelLayout);
+		setupMovableItems();
+		setupBricks(levelLayout);
 		addNodesToRoot(rootLevel);		
 		theStage.setScene(levelScene);
-		currentScene = levelScene;
-		currentScene.setOnKeyReleased(e -> handleKeyInputsScene(e));
+		levelScene.setOnKeyReleased(e -> handleKeyInputsScene(e));
 		buildAndSetGameLoop();
 		beginGameLoop();
 	}
@@ -140,12 +178,11 @@ public class GameWorld {
 		rootResult.getChildren().add(resultReport);
 		rootResult.getChildren().add(start);
 		theStage.setScene(resultScene);
-		currentScene = resultScene;
 	}
 	
 	private void handleStartGameKeyInputs(KeyEvent event){
 		if (event.getCode() == KeyCode.SPACE) {
-			initializeLevel(1);
+			initializeLevel(3);
 		}
 	}
 
@@ -201,7 +238,7 @@ public class GameWorld {
 		remainingLives.setY(550);
 	}
 	
-	private void setupMovableItems(ArrayList<Integer> bricksLayout){
+	private void setupMovableItems(){
 		started = false;
 
 		Ball newBall = new Ball();		
@@ -215,8 +252,6 @@ public class GameWorld {
 
 		paddle.setX(WIDTH / 2 - paddle.getPaddle().getBoundsInParent().getWidth() / 2);
 		paddle.setY(newBall.getBall().getBoundsInParent().getMaxY());
-		
-		setupBricks(bricksLayout);		
 	}
 	
 	private void setupBricks(ArrayList<Integer> bricksLayout){
@@ -227,12 +262,11 @@ public class GameWorld {
 		double xPosition = WIDTH / 2;
 		double yPosition = 100;
 
-		numOfBricks = 0;
 		bricks.clear();
 		for (int totalBricksInLayer : bricksLayout){
 			for (int indexInLayer = 0; indexInLayer < totalBricksInLayer; indexInLayer++){
 				rn = rd.nextInt(10) + 1;
-				newBrick = new Brick(rn, currentLayer, indexInLayer , totalBricksInLayer, numOfBricks++);
+				newBrick = new Brick(rn, currentLayer, indexInLayer , totalBricksInLayer);
 				newBrick.setPosition(xPosition, yPosition);
 				bricks.add(newBrick);
 			}
@@ -338,19 +372,20 @@ public class GameWorld {
 			}
 			for (Powerup powerup: powerups)
 				powerup.powerupMove(elapsedTime);
-			ballBounceOnPaddle();
-			ballBounceOnWalls();
-			ballHitOnAllBricks();
-			ballFallDown();	
-			powerupHitPaddle();
+			collisionDetector.ballBounceOnPaddle(balls, paddle);
+			collisionDetector.ballBounceOnWalls(balls);
+			collisionDetector.ballHitOnAllBricks(balls, bricks);
+			collisionDetector.ballFallDown(balls);	
+			collisionDetector.powerupHitPaddle(powerups, paddle);
+			lifeEnd();
 			levelEnd();
-		}
-		if (level == 3){
-			for (Brick brick: bricks){
-				brick.brickMove(elapsedTime);
+			if (level == 3){
+				for (Brick brick: bricks){
+					brick.brickMove(elapsedTime);
+				}
 			}
-		}
-		currentScene.setOnKeyPressed(e -> handleKeyInputsFrame(e.getCode(), elapsedTime));
+		}		
+		levelScene.setOnKeyPressed(e -> handleKeyInputsFrame(e.getCode(), elapsedTime));
 	}
 
 	private void handleKeyInputsFrame(KeyCode code, double elapsedTime){
@@ -369,235 +404,24 @@ public class GameWorld {
 					ball.ballMoveWithPaddle(paddle);
 		}
 	}
-	
-	private void ballBounceOnPaddle(){
-		for (Ball ball: balls){
-			double ballCenterX = ball.getX() + ball.getWidth() / 2;
-			double paddleMinX = paddle.getX();
-			double paddleMaxX = paddle.getX() + paddle.getWidth();
-			double ballMinY = ball.getY();
-			double ballMaxY = ball.getY() + ball.getHeight();
-			double paddleMinY = paddle.getY();
-			double paddleOneThirdsX = paddle.getX() + paddle.getWidth() / 3;
-			double paddleTwoThirdsX = paddle.getX() + paddle.getWidth() * 2 / 3;
-			if (ballMaxY >= paddleMinY && ballMinY <= paddleMinY){
-				if ((ballCenterX >= paddleMinX && ballCenterX <= paddleOneThirdsX) || (ballCenterX <= paddleMaxX && ballCenterX >= paddleTwoThirdsX)){				
-					if (!paddle.getSticky()){
-						ball.ballBounceVertical();
-					}
-					else{
-						ball.setSticked(true);
-						paddle.setSticky(false);
-					}
-				}
-				else if (ballCenterX > paddleOneThirdsX && ballCenterX < paddleTwoThirdsX){
-					if (!paddle.getSticky()){
-						ball.ballBounceVertical();
-						ball.ballBounceHorizontal();
-					}
-					else{
-						ball.setSticked(true);
-						paddle.setSticky(false);
-					}
-				}
-			}
-		}
-	}
-	
-	private void ballBounceOnWalls(){
-		for (Ball ball: balls){
-			double ballMinX = ball.getX();
-			double ballMaxX = ball.getX() + ball.getWidth();
-			double ballMinY = ball.getY();
-			double ballMaxY = ball.getY() + ball.getHeight();
-			if ((ballMinX < 0 && ballMaxX > 0) || (ballMaxX > WIDTH && ballMinX < WIDTH))
-				ball.ballBounceHorizontal();
-			else if (ballMinY < 0 && ballMaxY > 0)
-				ball.ballBounceVertical();
+
+	private void lifeEnd() {
+		if (isLifeEnd()){
+			actionsLifeEnd();
 		}
 	}
 
-	private void ballHitOnAllBricks() {
-		bricksToBeRemoved.clear();
-		for (Brick brick: bricks){
-			for (Ball ball: balls){
-				ballHitBrick(ball, brick);
-			}
-		}
-		for (Brick brick: bricks){
-			if (brick.getRemovalMark()){
-				bricksToBeRemoved.add(brick);
-				rootLevel.getChildren().remove(brick.getBrick());
-			}
-		}
-		bricks.removeAll(bricksToBeRemoved);
+	private boolean isLifeEnd() {
+		return (0 == balls.size());
 	}
 	
-	private void ballHitBrick(Ball ball, Brick brick){
-		int ballDirectionHorizontal = ball.getDirectionHorizontal();
-		int ballDirectionVertical = ball.getDirectionVertical();
-		double ballMinX = ball.getX();
-		double ballMaxX = ball.getX() + ball.getWidth();
-		double ballMinY = ball.getY();
-		double ballMaxY = ball.getY() + ball.getHeight();
-		double brickMinX = brick.getX();
-		double brickMaxX = brick.getX() + brick.getWidth();
-		double brickMinY = brick.getY();
-		double brickMaxY = brick.getY() + brick.getHeight();
-		
-		// check for hit on the upper edge
-		if (ballDirectionVertical > 0 && ballMaxY >= brickMinY && ballMinY <= brickMaxY && ballMaxX <= brickMaxX && ballMinX >= brickMinX){
-			int type = brick.hitBrick();
-			increaseScore(type);
-			ball.ballBounceVertical();
-			dropPowerup(brick);
-		}
-		// check for hit on the lower edge
-		else if (ballDirectionVertical < 0 && ballMinY <= brickMaxY && ballMaxY >= brickMaxY && ballMaxX <= brickMaxX && ballMinX >= brickMinX){
-			int type = brick.hitBrick();
-			increaseScore(type);
-			ball.ballBounceVertical();
-			dropPowerup(brick);
-		}
-		// check for hit on the left edge
-		else if (ballDirectionHorizontal > 0 && ballMaxX >= brickMinX && ballMinX <= brickMinX && ballMaxY <= brickMaxY && ballMinY >= brickMinY){
-			int type = brick.hitBrick();
-			increaseScore(type);
-			ball.ballBounceHorizontal();
-			dropPowerup(brick);
-		}
-		// check for hit on the left edge
-		else if (ballDirectionHorizontal < 0 && ballMinX <= brickMaxX && ballMaxX >= brickMaxX && ballMaxY <= brickMaxY && ballMinY >= brickMinY){
-			int type = brick.hitBrick();
-			increaseScore(type);
-			ball.ballBounceHorizontal();
-			dropPowerup(brick);
-		}
-	}
-	
-	private void increaseScore(int type){
-		switch (type){
-		case 1:
-			score += 100;
-			break;
-		case 2:
-			score += 200;
-			break;
-		case 3:
-			score += 300;
-			break;
-		}
-		currentScore.setText("Current Score: "+ score);
-	}
-	
-	private void dropPowerup(Brick brick){
-		Random rn = new Random();
-		double indicator = rn.nextDouble();
-		int type = rn.nextInt(4) + 1;
-		if (indicator <= 0.3){
-			Powerup newPowerup = new Powerup(type, brick);
-			powerups.add(newPowerup);
-			rootLevel.getChildren().add(newPowerup.getPowerup());
-		}
-	}
-	
-	private void ballFallDown(){
-		for (Ball ball: balls){
-			double ballMinY = ball.getY();
-			if (ballMinY >= HEIGHT){
-				ball.setRemovalMark();
-				rootLevel.getChildren().remove(ball.getBall());
-			}
-		}
-		for (Ball ball: balls){
-			if (ball.getRemovalMark())
-				ballsToBeRemoved.add(ball);
-		}
-		balls.removeAll(ballsToBeRemoved);
-		if (balls.size() == 0){
-			endOfLife();
-		}
-	}
-	
-	private void powerupHitPaddle() {
-		for (Powerup powerup: powerups){
-			double powerupCenterX = powerup.getX() + powerup.getWidth() / 2;
-			double powerupMinY = powerup.getY();
-			double powerupMaxY = powerup.getY() + powerup.getHeight();
-			double paddleMinX = paddle.getX();
-			double paddleMaxX = paddle.getX() + paddle.getWidth();
-			double paddleMinY = paddle.getY();
-			if (powerupMaxY >= paddleMinY && powerupMinY <= paddleMinY){
-				if (powerupCenterX >= paddleMinX && powerupCenterX <= paddleMaxX){
-					powerupEffect(powerup);
-				}
-			}
-			else if (powerupMinY >= HEIGHT){
-				powerup.setRemovalMark();
-			}
-		}
-		for (Powerup powerup: powerups){
-			if (powerup.getRemovalMark()){
-				rootLevel.getChildren().remove(powerup.getPowerup());
-				powerupsToBeRemoved.add(powerup);
-			}
-		}
-		powerups.removeAll(powerupsToBeRemoved);
-	}
-	
-	private void powerupEffect(Powerup powerup) {
-		powerup.setRemovalMark();
-		switch (powerup.getType()){
-		case 1:
-			speedUpBall(1.2);
-			break;
-		case 2:
-			splitBall(3);
-			break;
-		case 3:
-			stickyPaddle(3);
-			break;
-		case 4:
-			increaseLife(1);
-			break;
-		}
-	}
-
-	private void increaseLife(int i) {
-		lives++;
-		remainingLives.setText("Remaining lives: " + lives);
-	}
-
-	private void stickyPaddle(int i) {
-		paddle.setSticky(true);
-	}
-
-	private void splitBall(int number) {
-		for (Ball ball: balls){
-			for (int i = 1; i < number; i++){
-				Ball newBall = new Ball();
-				newBall.setX(ball.getX());
-				newBall.setY(ball.getY());
-				ballsToBeAdded.add(newBall);
-				rootLevel.getChildren().add(newBall.getBall());
-			}
-		}
-		balls.addAll(ballsToBeAdded);
-	}
-
-	private void speedUpBall(double times) {
-		for (Ball ball: balls){
-			ball.setSpeed(times);
-		}
-	}
-
-	private void endOfLife(){
+	private void actionsLifeEnd(){
 		lives--;
 		score = 0;
 		if (!isDead()){
 			setupFixedItems();
-			setupMovableItems(levelLayout);
-			addNodesToRoot(rootLevel);	
+			setupMovableItems();
+			addNodesToRoot(rootLevel);
 		}
 		else{
 			stopGameLoop();
@@ -607,18 +431,25 @@ public class GameWorld {
 
 	private void levelEnd() {
 		if (isLevelEnd()){
-			stopGameLoop();
-			if (level < 3)
-				initializeLevel(++level);
-			else
-				initializeResultPage();
+			actionsLevelEnd();
 		}
 	}
 	
 	private boolean isLevelEnd(){
-		return (bricks.size() == 0);
+		return (0 == bricks.size());
 	}
 	
+	private void actionsLevelEnd() {
+		if (level < 3){
+			stopGameLoop();
+			initializeLevel(++level);
+		}
+		else{
+			stopGameLoop();
+			initializeResultPage();
+		}
+	}
+
 	private boolean isDead(){
 		return (lives == 0);
 	}
