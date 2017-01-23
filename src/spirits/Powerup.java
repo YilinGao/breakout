@@ -5,6 +5,13 @@ import java.util.Random;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
+/**
+ * the class to implement powerups in the game,
+ * a wrapper for the class ImageView,
+ * depends on spirits.Brick
+ * @author Yilin Gao
+ *
+ */
 public class Powerup {
 
 	private static final String POWERUP_IMAGE1 = "speedpower.gif";
@@ -17,6 +24,11 @@ public class Powerup {
 	private int type;
 	private boolean toBeRemoved = false;
 	
+	/**
+	 * constructor of the class Powerup
+	 * @param theType: the random number generated in GameWorld to determine the powerup's type
+	 * @param brick: the brick which was hit and generates this powerup
+	 */
 	public Powerup(double theType, Brick brick){
 		String path = POWERUP_IMAGE1;
 		if (theType <= 0.1){
@@ -82,6 +94,11 @@ public class Powerup {
 	public boolean getRemovalMark(){
 		return toBeRemoved;
 	}
+	
+	/**
+	 * set up the movement of the powerup
+	 * @param elapsedTime
+	 */
 	public void powerupMove(double elapsedTime){
 		powerup.setY(getMinY() + elapsedTime * powerup_speed);
 	}

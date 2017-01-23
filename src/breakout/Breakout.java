@@ -4,8 +4,9 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 
 /**
- * 
- * @author ygao
+ * the entrance of the program,
+ * depends on the class breakout.GameWorld
+ * @author Yilin Gao
  *
  */
 public class Breakout extends Application {
@@ -16,8 +17,6 @@ public class Breakout extends Application {
 		// Auto-generated method stub	
 		gameWorld.initializeWelcome(primaryStage);
 	}
-	
-	
 	
 	public static void main(String[] args) {
 		// Auto-generated method stub

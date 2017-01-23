@@ -9,6 +9,12 @@ import spirits.Brick;
 import spirits.Paddle;
 import spirits.Powerup;
 
+/**
+ * dealing with all possible kinds of collisions between items,
+ * depends on breakout.Breakout, spirits.Ball, spirits.Brick, spirits.Paddle, spirits.Powerup
+ * @author Yilin Gao
+ *
+ */
 public class Collision {
 	
 	ArrayList<Ball> ballsToBeAdded = new ArrayList<>();
@@ -25,6 +31,12 @@ public class Collision {
 		gameWorld = originalGameWorld;
 	}
 	
+	/**
+	 * test if any ball hits the paddle,
+	 * actions to do when a ball hits the paddle
+	 * @param balls: all balls in the game
+	 * @param paddle: the paddle in the game
+	 */
 	public void ballBounceOnPaddle(ArrayList<Ball> balls, Paddle paddle){
 		for (Ball ball: balls){
 			int ballDirectionHorizontal = ball.getDirectionHorizontal();
@@ -71,6 +83,11 @@ public class Collision {
 		}
 	}
 	
+	/**
+	 * test if any ball hits walls,
+	 * actions to do when a ball hits walls
+	 * @param balls: all balls in the game
+	 */
 	public void ballBounceOnWalls(ArrayList<Ball> balls){
 		for (Ball ball: balls){
 			double ballMinX = ball.getMinX();
@@ -83,7 +100,12 @@ public class Collision {
 				ball.ballBounceVertical();
 		}
 	}
-
+	
+	/**
+	 * test if any ball falls down,
+	 * actions to do when a ball falls down
+	 * @param balls: all balls in the game
+	 */
 	public void ballFallDown(ArrayList<Ball> balls){
 		for (Ball ball: balls){
 			double ballMinY = ball.getBall().getBoundsInParent().getMinY();
@@ -99,6 +121,12 @@ public class Collision {
 		balls.removeAll(ballsToBeRemoved);
 	}	
 
+	/**
+	 * test if any ball hits any brick,
+	 * remove bricks hit
+	 * @param balls: all balls in the game
+	 * @param bricks: all bricks in the game
+	 */
 	public void ballHitAllBricks(ArrayList<Ball> balls, ArrayList<Brick> bricks) {
 		bricksToBeRemoved.clear();
 		for (Brick brick: bricks){
@@ -115,6 +143,12 @@ public class Collision {
 		bricks.removeAll(bricksToBeRemoved);
 	}	
 	
+	/**
+	 * test if one ball hits one brick,
+	 * actions to do when the ball hits the brick
+	 * @param ball: the tested ball
+	 * @param brick: the tested brick
+	 */
 	private void ballHitBrick(Ball ball, Brick brick){
 		int ballDirectionHorizontal = ball.getDirectionHorizontal();
 		int ballDirectionVertical = ball.getDirectionVertical();
@@ -157,6 +191,10 @@ public class Collision {
 		}
 	}
 	
+	/**
+	 * increase score when a brick is hit
+	 * @param type: type of the hit brick
+	 */
 	private void increaseScore(int type){
 		switch (type){
 		case 1:
@@ -172,6 +210,10 @@ public class Collision {
 		gameWorld.setCurrentScore("Current Score: "+ gameWorld.getScore());
 	}
 	
+	/**
+	 * determine if a powerup will drop up when a brick is hit
+	 * @param brick: the hit brick
+	 */
 	private void dropPowerup(Brick brick){
 		Random rn = new Random();
 		double indicator = rn.nextDouble();
@@ -182,6 +224,12 @@ public class Collision {
 		}
 	}
 	
+	/**
+	 * test if any powerup hits the paddle,
+	 * actions to do when a powerup hits the paddle
+	 * @param powerups: all powerups in the game
+	 * @param paddle: the paddle in the game
+	 */
 	public void powerupHitPaddle(ArrayList<Powerup> powerups, Paddle paddle) {
 		for (Powerup powerup: powerups){
 			double powerupMinX = powerup.getMinX();
@@ -210,6 +258,10 @@ public class Collision {
 		powerups.removeAll(powerupsToBeRemoved);
 	}
 	
+	/**
+	 * the effect when a powerup hits the paddle
+	 * @param powerup: the powerup
+	 */
 	private void powerupEffect(Powerup powerup) {
 		powerup.setRemovalMark();
 		switch (powerup.getType()){
@@ -228,15 +280,27 @@ public class Collision {
 		}
 	}
 
+	/**
+	 * powerup effect 4: increase 1 life
+	 * @param i: the increased number of lives
+	 */
 	private void increaseLife(int i) {
-		gameWorld.setLives(gameWorld.getLives() + 1);
+		gameWorld.setLives(gameWorld.getLives() + i);
 		gameWorld.setRemainingLives("Remaining lives: " + gameWorld.getLives());
 	}
 
+	/**
+	 * powerup effect 3: make the paddle sticky
+	 * @param i: the duration of sticky effect (in second)
+	 */
 	private void stickyPaddle(int i) {
 		gameWorld.getPaddle().setSticky(true);
 	}
 
+	/**
+	 * powerup effect 2: split each ball into several balls
+	 * @param number: the number of balls out of each ball
+	 */
 	private void splitBall(int number) {
 		ArrayList<Ball> balls = gameWorld.getBalls();
 		for (Ball ball: balls){
@@ -251,6 +315,10 @@ public class Collision {
 		balls.addAll(ballsToBeAdded);
 	}
 
+	/**
+	 * powerup effect 1: speed the ball up by certain times
+	 * @param times: the times of ball speeding up
+	 */
 	private void speedUpBall(double times) {
 		ArrayList<Ball> balls = gameWorld.getBalls();
 		for (Ball ball: balls){

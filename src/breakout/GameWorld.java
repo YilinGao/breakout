@@ -24,6 +24,12 @@ import spirits.Brick;
 import spirits.Paddle;
 import spirits.Powerup;
 
+/**
+ * the controller of the program, running game loops, managing items on each scene,
+ * depends on collisions.Collision, spirits.Ball, spirits.Brick, spirits.Paddle, spirits.Powerup
+ * @author Yilin Gao
+ *
+ */
 public class GameWorld {
 	private static final String title = "Breakout";
 	private static final int framesPerSecond = 120;
@@ -198,6 +204,9 @@ public class GameWorld {
 		score = 0;
 	}
 
+	/**
+	 * read text file inputs as brick layouts
+	 */
 	private void chooseAndReadInput() {
 		switch (level) {
 		case 1:
@@ -214,7 +223,12 @@ public class GameWorld {
 			break;
 		}
 	}
-		
+	
+	/**
+	 * implement detailed file input reading procedure
+	 * @param inputPath: the String variable of the file path
+	 * @param outputList: the ArrayList to store file contents
+	 */
 	private void readFileInput(String inputPath, ArrayList<Integer> outputList){
 		outputList.clear();
 		Scanner sc = new Scanner(getClass().getClassLoader().getResourceAsStream(inputPath));
@@ -249,7 +263,8 @@ public class GameWorld {
 	}
 	
 	/**
-	 * set up balls, paddle
+	 * set up balls, paddle,
+	 * call setupBricks()
 	 */
 	private void setupMovableItems(){
 		started = false;
@@ -290,6 +305,10 @@ public class GameWorld {
 		}
 	}
 	
+	/**
+	 * add all nodes to the scene's root
+	 * @param root: the root for the scene, a Group class variable
+	 */
 	private void addNodesToRoot(Group root){
 		root.getChildren().clear();
 		for (Ball ball: balls){
@@ -304,6 +323,10 @@ public class GameWorld {
 		}
 	}
 	
+	/**
+	 * handle key events during each scene
+	 * @param event: KeyEvent
+	 */
 	private void handleKeyInputsScene(KeyEvent event){
 		if (event.getCode() == KeyCode.SPACE) {
 			if (!started)
@@ -341,7 +364,7 @@ public class GameWorld {
 	}
 	
 	/**
-	 * set up game loop (time line),
+	 * set up game loop (timeline),
 	 * call actionsPerFrame(double elapsedTime) to handle animations of nodes during each frame
 	 */
 	private void buildAndSetGameLoop(){
@@ -359,10 +382,16 @@ public class GameWorld {
 		timeline.getKeyFrames().add(oneFrame);
 	}
 	
+	/**
+	 * begin game loop (timeline)
+	 */
 	private void beginGameLoop(){
 		timeline.play();
 	}
 	
+	/**
+	 * stop game loop (timeline)
+	 */
 	private void stopGameLoop(){
 		timeline.stop();
 	}
@@ -404,6 +433,11 @@ public class GameWorld {
 		levelScene.setOnKeyPressed(e -> handleKeyInputsFrame(e.getCode(), elapsedTime));
 	}
 
+	/**
+	 * handle key events in each fram
+	 * @param code: KeyEvent's KeyCode
+	 * @param elapsedTime: the duration of each frame
+	 */
 	private void handleKeyInputsFrame(KeyCode code, double elapsedTime){
 		int direction = 0;
 		if (code == KeyCode.LEFT){
@@ -421,16 +455,27 @@ public class GameWorld {
 		}
 	}
 
+	/**
+	 * call isLifeEnd() to test if during this frame, the current life is dead,
+	 * if so, call actionsLifeEnd() to do relevant actions
+	 */
 	private void lifeEnd() {
 		if (isLifeEnd()){
 			actionsLifeEnd();
 		}
 	}
 
+	/**
+	 * test if the current life is dead
+	 * @return true or false
+	 */
 	private boolean isLifeEnd() {
 		return (0 == balls.size());
 	}
 	
+	/**
+	 * actions to perform when the current life is dead
+	 */
 	private void actionsLifeEnd(){
 		lives--;
 		score = 0;
@@ -445,16 +490,27 @@ public class GameWorld {
 		}
 	}
 
+	/**
+	 * call isLevelEnd() to test if during this frame, the current level has finished,
+	 * if so, call actionsLevelEnd() to do relevant actions
+	 */
 	private void levelEnd() {
 		if (isLevelEnd()){
 			actionsLevelEnd();
 		}
 	}
 	
+	/**
+	 * test if the current level has finished
+	 * @return true or false
+	 */
 	private boolean isLevelEnd(){
 		return (0 == bricks.size());
 	}
 	
+	/**
+	 * actions to perform when the current level has finished
+	 */
 	private void actionsLevelEnd() {
 		if (level < 3){
 			stopGameLoop();
@@ -466,6 +522,10 @@ public class GameWorld {
 		}
 	}
 
+	/**
+	 * test if the player is dead
+	 * @return true or false
+	 */
 	private boolean isDead(){
 		return (lives == 0);
 	}

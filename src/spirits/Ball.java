@@ -5,6 +5,13 @@ import java.util.Random;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
+/**
+ * the class to implement balls in the game,
+ * a wrapper of the ImageView class,
+ * depends on spirits.Paddle
+ * @author ygao
+ *
+ */
 public class Ball {
 
 	private static final String BALL_IMAGE = "ball.gif";
@@ -14,6 +21,9 @@ public class Ball {
 	private boolean sticked = false;
 	private ImageView ball;
 	
+	/**
+	 * the constructor of the class Ball
+	 */
 	public Ball(){
 		Image image = new Image(getClass().getClassLoader().getResourceAsStream(BALL_IMAGE));
 		ball = new ImageView(image);
@@ -88,21 +98,35 @@ public class Ball {
 		ballSpeedHorizontal *= times;
 	}
 
+	/**
+	 * the ball moves with the paddle
+	 * @param paddle
+	 */
 	public void ballMoveWithPaddle(Paddle paddle){
 		double paddleCenterX = (paddle.getMinX() + paddle.getMaxX()) / 2;
 		ball.setX(paddleCenterX - getWidth() / 2);
 		ball.setY(480);
 	}
 	
+	/** 
+	 * set up the movement of the ball
+	 * @param elapsedTime
+	 */
 	public void ballMove(double elapsedTime){
 		ball.setX(ball.getX() + elapsedTime * ballSpeedHorizontal);
 		ball.setY(ball.getY() + elapsedTime * ballSpeedVertical);
 	}
 	
+	/**
+	 * set up the horizontal bounce of the ball
+	 */
 	public void ballBounceHorizontal(){
 		ballSpeedHorizontal *= -1;
 	}
 	
+	/**
+	 * set up the vertical bounce of the ball
+	 */
 	public void ballBounceVertical(){
 		ballSpeedVertical *= -1;
 	}

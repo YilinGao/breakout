@@ -4,12 +4,22 @@ import breakout.GameWorld;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
+/**
+ * the class to implement paddle in the game,
+ * a wrapper of the ImageView class,
+ * depends on breakout.GameWorld
+ * @author Yilin Gao
+ *
+ */
 public class Paddle {
 	private static final String PADDLE_IMAGE = "paddle.gif";
 	private int paddle_speed = 1600;
 	private boolean sticky = false;
 	private ImageView paddle;
 	
+	/**
+	 * constructor of the Paddle class
+	 */
 	public Paddle(){
 		Image image = new Image(getClass().getClassLoader().getResourceAsStream(PADDLE_IMAGE));
 		paddle = new ImageView(image);
@@ -47,10 +57,6 @@ public class Paddle {
 		return sticky;
 	}
 	
-	public void initializePaddle(){
-		
-	}
-	
 	public void setX(double x){
 		paddle.setX(x);
 	}
@@ -67,6 +73,11 @@ public class Paddle {
 		sticky = status;
 	}
 	
+	/**
+	 * perform the movement of the paddle
+	 * @param direction, 1 indicating right, -1 indicating left
+	 * @param elapsedTime
+	 */
 	public void paddleMove(int direction, double elapsedTime){
 		if (getMinX() >= GameWorld.WIDTH){
 			paddle.setX(0 + getMinX() - GameWorld.WIDTH);
