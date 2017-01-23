@@ -52,34 +52,35 @@ public class Collision {
 			
 			// check for hit on the upper edge
 			if (ballDirectionVertical > 0 && ballMaxY >= paddleMinY && ballMinY <= paddleMinY && ((ballMaxX >= paddleMinX) && (ballMaxX <= paddleMaxX) || (ballMinX >= paddleMinX && ballMinX <= paddleMaxX))){
-				if (!paddle.getSticky()){
-					ball.ballBounceVertical();
-				}
-				else{
-					ball.setSticked(true);
-					paddle.setSticky(false);
-				}
+				ballBounceOnPaddleEffect(paddle, ball, 1);
 			}
 			// check for hit on the left edge
 			if (ballDirectionHorizontal > 0 && ballMaxX >= paddleMinX && ballMinX <= paddleMinX && ((ballMaxY >= paddleMinY && ballMaxY <= paddleMaxY) || (ballMinY >= paddleMinY && ballMinY <= paddleMaxY))){
-				if (!paddle.getSticky()){
-					ball.ballBounceHorizontal();
-				}
-				else{
-					ball.setSticked(true);
-					paddle.setSticky(false);
-				}
+				ballBounceOnPaddleEffect(paddle, ball, -1);
 			}
 			// check for hit on the left edge
 			if (ballDirectionHorizontal < 0 && ballMinX <= paddleMaxX && ballMaxX >= paddleMaxX && ((ballMaxY >= paddleMinY && ballMaxY <= paddleMaxY) || (ballMinY >= paddleMinY && ballMinY <= paddleMaxY))){
-				if (!paddle.getSticky()){
-					ball.ballBounceHorizontal();
-				}
-				else{
-					ball.setSticked(true);
-					paddle.setSticky(false);
-				}
+				ballBounceOnPaddleEffect(paddle, ball, -1);
 			}
+		}
+	}
+
+	/**
+	 * the actual actions when the ball bounces on the paddle
+	 * @param paddle
+	 * @param ball
+	 * @param indicator: to indicate to bounce horizontally or vertically
+	 */
+	private void ballBounceOnPaddleEffect(Paddle paddle, Ball ball, int indicator) {
+		if (!paddle.getSticky()){
+			if (1 == indicator)
+				ball.ballBounceVertical();
+			else if (-1 == indicator)
+				ball.ballBounceHorizontal();
+		}
+		else{
+			ball.setSticked(true);
+			paddle.setSticky(false);
 		}
 	}
 	
@@ -150,6 +151,7 @@ public class Collision {
 	 * @param brick: the tested brick
 	 */
 	private void ballHitBrick(Ball ball, Brick brick){
+		boolean hit = false;
 		int ballDirectionHorizontal = ball.getDirectionHorizontal();
 		int ballDirectionVertical = ball.getDirectionVertical();
 		double ballMinX = ball.getMinX();
@@ -163,32 +165,40 @@ public class Collision {
 		
 		// check for hit on the upper edge
 		if (ballDirectionVertical > 0 && ballMaxY >= brickMinY && ballMinY <= brickMinY && ((ballMaxX >= brickMinX) && (ballMaxX <= brickMaxX) || (ballMinX >= brickMinX && ballMinX <= brickMaxX))){
-			int type = brick.hitBrick();
-			increaseScore(type);
 			ball.ballBounceVertical();
-			dropPowerup(brick);
+			hit = firstHit(brick, hit);
 		}
 		// check for hit on the lower edge
-		else if (ballDirectionVertical < 0 && ballMinY <= brickMaxY && ballMaxY >= brickMaxY && ((ballMaxX >= brickMinX) && (ballMaxX <= brickMaxX) || (ballMinX >= brickMinX && ballMinX <= brickMaxX))){
-			int type = brick.hitBrick();
-			increaseScore(type);
+		if (ballDirectionVertical < 0 && ballMinY <= brickMaxY && ballMaxY >= brickMaxY && ((ballMaxX >= brickMinX) && (ballMaxX <= brickMaxX) || (ballMinX >= brickMinX && ballMinX <= brickMaxX))){
 			ball.ballBounceVertical();
-			dropPowerup(brick);
+			hit = firstHit(brick, hit);
 		}
 		// check for hit on the left edge
-		else if (ballDirectionHorizontal > 0 && ballMaxX >= brickMinX && ballMinX <= brickMinX && ((ballMaxY >= brickMinY && ballMaxY <= brickMaxY) || (ballMinY >= brickMinY && ballMinY <= brickMaxY))){
-			int type = brick.hitBrick();
-			increaseScore(type);
+		if (ballDirectionHorizontal > 0 && ballMaxX >= brickMinX && ballMinX <= brickMinX && ((ballMaxY >= brickMinY && ballMaxY <= brickMaxY) || (ballMinY >= brickMinY && ballMinY <= brickMaxY))){
 			ball.ballBounceHorizontal();
-			dropPowerup(brick);
+			hit = firstHit(brick, hit);
 		}
 		// check for hit on the left edge
-		else if (ballDirectionHorizontal < 0 && ballMinX <= brickMaxX && ballMaxX >= brickMaxX && ((ballMaxY >= brickMinY && ballMaxY <= brickMaxY) || (ballMinY >= brickMinY && ballMinY <= brickMaxY))){
+		if (ballDirectionHorizontal < 0 && ballMinX <= brickMaxX && ballMaxX >= brickMaxX && ((ballMaxY >= brickMinY && ballMaxY <= brickMaxY) || (ballMinY >= brickMinY && ballMinY <= brickMaxY))){
+			ball.ballBounceHorizontal();
+			hit = firstHit(brick, hit);
+		}
+	}
+
+	/**
+	 * check if this is the first hit between the ball and the brick in this frame
+	 * @param brick
+	 * @param hit
+	 * @return
+	 */
+	private boolean firstHit(Brick brick, boolean hit) {
+		if (!hit){
+			hit = true;
 			int type = brick.hitBrick();
 			increaseScore(type);
-			ball.ballBounceHorizontal();
 			dropPowerup(brick);
 		}
+		return hit;
 	}
 	
 	/**
