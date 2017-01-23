@@ -1,4 +1,6 @@
-#A variant of the classic game Breakout
+# A variant of the classic game Breakout
+
+-------------
 
 -  Names of all people who worked on the project: Yilin Gao.
 - Date to start: Jan 13, date to finish: Jan 22. Estimated number of hours of work: 40 hours.
