@@ -12,7 +12,7 @@
 	
 	- `breakout/data` includes 3 text files to indicate the layout of bricks in each level.
 
-- 	1. Instructions:
+- 	Instructions:
 
 	- Press `SPACE` to start each level. Press `SPACE` to pause and resume during the level.
 	- Use the left and right keys on the keyboard to control the paddle.
@@ -21,13 +21,13 @@
 	- The ball bounce normally (reflect) when it hits on the paddle's upper, left and right surface, or when it hits on a brick's all four surfaces. But the ball bounces back in its original direction when it hits on the paddle or a brick's corner.
 	- The paddle can warp from one side of the screen to the other side when it hits the wall.
 
-	2. Cheat keys:
+	Cheat keys:
 
 	- R: reset the current level (with scores turned to 0 and lives unchanged)
 	- B: restore the paddle to its initial position
 	- 1, 2, 3: skip the current level and start the corresponding level (with scores turned to 0 and lives unchanged)
 
-	3. Power-ups:
+	Power-ups:
 	
 	- red: speed all balls up by 1.2 times
 	- yellow: the paddle becomes sticky (next time a ball bounces onto it, it will catch the ball for 3 seconds)
