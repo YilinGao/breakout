@@ -23,9 +23,9 @@
 
 	Cheat keys:
 
-	- R: reset the current level (with scores turned to 0 and lives unchanged)
-	- B: restore the paddle to its initial position
-	- 1, 2, 3: skip the current level and start the corresponding level (with scores turned to 0 and lives unchanged)
+	- `R`: reset the current level (with scores turned to 0 and lives unchanged)
+	- `B`: restore the paddle to its initial position
+	- `1`, `2`, `3`: skip the current level and start the corresponding level (with scores turned to 0 and lives unchanged)
 
 	Power-ups:
 	
