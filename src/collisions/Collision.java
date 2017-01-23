@@ -36,10 +36,24 @@ public class Collision {
 			double paddleOneThirdsX = paddle.getPaddle().getBoundsInParent().getMinX() + paddle.getPaddle().getBoundsInParent().getWidth() / 3;
 			double paddleTwoThirdsX = paddle.getPaddle().getBoundsInParent().getMinX() + paddle.getPaddle().getBoundsInParent().getWidth() * 2 / 3;
 			if (ballMaxY >= paddleMinY && ballMinY <= paddleMinY){
-				if ((ballCenterX >= paddleMinX && ballCenterX <= paddleOneThirdsX) || (ballCenterX <= paddleMaxX && ballCenterX >= paddleTwoThirdsX)){				
+				if (ballCenterX >= paddleMinX && ballCenterX <= paddleOneThirdsX){				
 					if (!paddle.getSticky()){
-						ball.ballBounceVertical();
-						ball.ballBounceHorizontal();
+						if (ball.getDirectionVertical() > 0)
+							ball.ballBounceVertical();
+						if (ball.getDirectionHorizontal() > 0)
+							ball.ballBounceHorizontal();
+					}
+					else{
+						ball.setSticked(true);
+						paddle.setSticky(false);
+					}
+				}
+				else if (ballCenterX <= paddleMaxX && ballCenterX >= paddleTwoThirdsX){
+					if (!paddle.getSticky()){
+						if (ball.getDirectionVertical() > 0)
+							ball.ballBounceVertical();
+						if (ball.getDirectionHorizontal() < 0)
+							ball.ballBounceHorizontal();
 					}
 					else{
 						ball.setSticked(true);
@@ -48,7 +62,8 @@ public class Collision {
 				}
 				else if (ballCenterX > paddleOneThirdsX && ballCenterX < paddleTwoThirdsX){
 					if (!paddle.getSticky()){
-						ball.ballBounceVertical();
+						if (ball.getDirectionVertical() > 0)
+							ball.ballBounceVertical();
 					}
 					else{
 						ball.setSticked(true);
@@ -116,28 +131,28 @@ public class Collision {
 		double brickMaxY = brick.getBrick().getBoundsInParent().getMaxY();
 		
 		// check for hit on the upper edge
-		if (ballDirectionVertical > 0 && ballMaxY >= brickMinY && ballMinY <= brickMaxY && ballMaxX <= brickMaxX && ballMinX >= brickMinX){
+		if (ballDirectionVertical > 0 && ballMaxY >= brickMinY && ballMinY <= brickMinY && ((ballMaxX >= brickMinX) && (ballMaxX <= brickMaxX) || (ballMinX >= brickMinX && ballMinX <= brickMaxX))){
 			int type = brick.hitBrick();
 			increaseScore(type);
 			ball.ballBounceVertical();
 			dropPowerup(brick);
 		}
 		// check for hit on the lower edge
-		else if (ballDirectionVertical < 0 && ballMinY <= brickMaxY && ballMaxY >= brickMaxY && ballMaxX <= brickMaxX && ballMinX >= brickMinX){
+		else if (ballDirectionVertical < 0 && ballMinY <= brickMaxY && ballMaxY >= brickMaxY && ((ballMaxX >= brickMinX) && (ballMaxX <= brickMaxX) || (ballMinX >= brickMinX && ballMinX <= brickMaxX))){
 			int type = brick.hitBrick();
 			increaseScore(type);
 			ball.ballBounceVertical();
 			dropPowerup(brick);
 		}
 		// check for hit on the left edge
-		else if (ballDirectionHorizontal > 0 && ballMaxX >= brickMinX && ballMinX <= brickMinX && ballMaxY <= brickMaxY && ballMinY >= brickMinY){
+		else if (ballDirectionHorizontal > 0 && ballMaxX >= brickMinX && ballMinX <= brickMinX && ((ballMaxY >= brickMinY && ballMaxY <= brickMaxY) || (ballMinY >= brickMinY && ballMinY <= brickMaxY))){
 			int type = brick.hitBrick();
 			increaseScore(type);
 			ball.ballBounceHorizontal();
 			dropPowerup(brick);
 		}
 		// check for hit on the left edge
-		else if (ballDirectionHorizontal < 0 && ballMinX <= brickMaxX && ballMaxX >= brickMaxX && ballMaxY <= brickMaxY && ballMinY >= brickMinY){
+		else if (ballDirectionHorizontal < 0 && ballMinX <= brickMaxX && ballMaxX >= brickMaxX && ((ballMaxY >= brickMinY && ballMaxY <= brickMaxY) || (ballMinY >= brickMinY && ballMinY <= brickMaxY))){
 			int type = brick.hitBrick();
 			increaseScore(type);
 			ball.ballBounceHorizontal();
