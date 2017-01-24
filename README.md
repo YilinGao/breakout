@@ -4,7 +4,7 @@
 This program is coded with JavaFX, as a variant of the classic Breakout game. Because of limited time and the practicing purpose, the graphic user interface and function variations of the program are not as fancy as published games. But this program is able to accomplish its designed purposes.
 
 -  Names of all people who worked on the project: Yilin Gao (yg95).
-- Date to start: Jan 13. Date to finish: Jan 22. Estimated number of hours of work: 40 hours.
+- Date to start: Jan 13. Date to finish: Jan 22. Estimated number of hours of work: 50 - 60 hours.
 - Since it is a personal project, I have taken up all roles during project development.
 - I referred a lot to JavaFX's online documentations, teacher's answers on Piazza, and many specific questions on Stack Overflow.
 - Files used to start the project: `Breakout.java`.
