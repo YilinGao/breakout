@@ -18,7 +18,7 @@ public class Ball {
 	private int ballSpeedHorizontal;
 	private int ballSpeedVertical;
 	private boolean toBeRemoved = false;
-	private boolean sticked = false;
+	private boolean stuck = false;
 	private ImageView ball;
 	
 	/**
@@ -73,8 +73,8 @@ public class Ball {
 		return toBeRemoved;
 	}
 	
-	public boolean getSticked(){
-		return sticked;
+	public boolean getStuck(){
+		return stuck;
 	}
 	
 	public void setX(double x){
@@ -89,8 +89,8 @@ public class Ball {
 		toBeRemoved = true;
 	}
 	
-	public void setSticked(boolean status){
-		sticked = status;
+	public void setStuck(boolean status){
+		stuck = status;
 	}
 	
 	public void setSpeed(double times){

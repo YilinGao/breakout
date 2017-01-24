@@ -79,7 +79,7 @@ public class Collision {
 				ball.ballBounceHorizontal();
 		}
 		else{
-			ball.setSticked(true);
+			ball.setStuck(true);
 			paddle.setSticky(false);
 		}
 	}

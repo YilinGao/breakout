@@ -342,7 +342,7 @@ public class GameWorld {
 		else if (event.getCode() == KeyCode.B){
 			paddle.setX(WIDTH / 2 - paddle.getWidth() / 2); 
 			for (Ball ball: balls){
-				if (!started || ball.getSticked())
+				if (!started || ball.getStuck())
 					ball.ballMoveWithPaddle(paddle);
 			}
 		}
@@ -403,14 +403,14 @@ public class GameWorld {
 	private void actionsPerFrame(double elapsedTime){
 		if (started & !paused){
 			for (Ball ball: balls){
-				if (!ball.getSticked()){
+				if (!ball.getStuck()){
 					ball.ballMove(elapsedTime);		
 				}
 				else{
 					numOfStickyFrames++;
 					if (numOfStickyFrames == 3 * framesPerSecond){   // the paddle sticks the ball for 3 seconds
 						ball.ballMove(elapsedTime);	
-						ball.setSticked(false);
+						ball.setStuck(false);
 						numOfStickyFrames = 0;
 					}
 				}
@@ -450,7 +450,7 @@ public class GameWorld {
 		if (!paused) {
 			paddle.paddleMove(direction, elapsedTime);
 			for (Ball ball : balls)
-				if (!started || (started && ball.getSticked()))
+				if (!started || (started && ball.getStuck()))
 					ball.ballMoveWithPaddle(paddle);
 		}
 	}
