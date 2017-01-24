@@ -29,9 +29,9 @@ As far as stated in the `README.md` file, there are 3 meaningful future improvem
 
  - Refine item representation
  
-    Currently all items in the game are regarded as rectangulars by the program. And all animations and collisions are based on this. However, this simplification loses some properties of the real world. For the ball is actually a sphere, and the paddle may have some curves at two ends. 
+    Currently all items in the game are regarded as rectangles by the program. And all animations and collisions are based on this. However, this simplification loses some properties of the real world. For the ball is actually a sphere, and the paddle may have some curves at two ends. 
 	 
-    For refinement, we can represent the ball as a circle in JavaFX, the brick as a rectangular, and the paddle as two half balls sticked to two short edges of a rectangular. And all collisions can be simplified to intersection between two balls, and between one ball and one line. 
+    For refinement, we can represent the ball as a circle in JavaFX, the brick as a rectangle, and the paddle as two half balls sticked to two short edges of a rectangle. And all collisions can be simplified to intersection between two balls, and between one ball and one line. 
  
 
  - Add mouse control into the game
@@ -74,7 +74,7 @@ As far as stated in the `README.md` file, there are 3 meaningful future improvem
 
  - For all item classes (`Ball`, `Brick`, `Powerup`) whose instances may be removed after construction, I use a boolean variable `toBeRemoved` as a member variable in the class as a mark for future removal. This mark is demanded because in the `ArrayList` class in Java items cannot be removed immediately. This processing method requires a second loop over items in the `ArrayList` when removing items, which degrades performance.
 
- - When checking for collisions between two items, both items are recognized as rectangulars. And there are multiple situations of rectangular relative positions. In my program, I mainly uses `minX`, `maxX`, `minY`, `maY` to identify position relationships. 
+ - When checking for collisions between two items, both items are recognized as rectangles. And there are multiple situations of rectangle relative positions. In my program, I mainly uses `minX`, `maxX`, `minY`, `maY` to identify position relationships. 
  
  	Moreover, for collisions happening between different items, the detecting criteria are with small but significant differences. For example, when the ball bounces on the paddle, I designed my code logic as following:
 
