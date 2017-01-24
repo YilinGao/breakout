@@ -110,4 +110,4 @@ As far as stated in the `README.md` file, there are 3 meaningful future improvem
  
  	Because all classes of items in the game are wrappers of the JavaFX class `ImageView`, all items are assumed to be rectangles when determining their positions, and detecting possible collisions. 
  
- 	Items are pinned down on the scene by the `(x, y)` coordinates of their f vertices. Collisions between items are detected by comparing `(x, y)` coordinates of their four vertices. 
+ 	Items are pinned down on the scene by the `(x, y)` coordinates of their four vertices. Collisions between items are detected by comparing the coordinates of their vertices.
