@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import breakout.GameWorld;
+import pages.LevelPage;
 import spirits.Ball;
 import spirits.Brick;
 import spirits.Paddle;
@@ -17,18 +18,18 @@ import spirits.Powerup;
  */
 public class Collision {
 	
-	ArrayList<Ball> ballsToBeAdded = new ArrayList<>();
+	private GameWorld gameWorld;
+	private ArrayList<Ball> ballsToBeAdded = new ArrayList<>();
 	private ArrayList<Ball> ballsToBeRemoved = new ArrayList<Ball>();
-	ArrayList<Brick> bricksToBeRemoved = new ArrayList<>();
-	ArrayList<Powerup> powerupsToBeRemoved = new ArrayList<>();
-	GameWorld gameWorld;
+	private ArrayList<Brick> bricksToBeRemoved = new ArrayList<>();
+	private ArrayList<Powerup> powerupsToBeRemoved = new ArrayList<>();
 	
 	/**
 	 * constructor of Collision class
 	 * @param originalGameWorld: the GameWorld instant
 	 */
-	public Collision(GameWorld originalGameWorld){
-		gameWorld = originalGameWorld;
+	public Collision(GameWorld theGameWorld){
+		gameWorld = theGameWorld;
 	}
 	
 	/**
@@ -112,7 +113,7 @@ public class Collision {
 			double ballMinY = ball.getBall().getBoundsInParent().getMinY();
 			if (ballMinY >= GameWorld.HEIGHT){
 				ball.setRemovalMark();
-				gameWorld.getRootLevel().getChildren().remove(ball.getBall());
+				gameWorld.getPage(1).getRoot().getChildren().remove(ball.getBall());
 			}
 		}
 		for (Ball ball: balls){
@@ -138,7 +139,7 @@ public class Collision {
 		for (Brick brick: bricks){
 			if (brick.getRemovalMark()){
 				bricksToBeRemoved.add(brick);
-				gameWorld.getRootLevel().getChildren().remove(brick.getBrick());
+				gameWorld.getPage(1).getRoot().getChildren().remove(brick.getBrick());
 			}
 		}
 		bricks.removeAll(bricksToBeRemoved);
@@ -217,7 +218,7 @@ public class Collision {
 			gameWorld.setScore(gameWorld.getScore() + 300);
 			break;
 		}
-		gameWorld.setCurrentScore("Current Score: "+ gameWorld.getScore());
+		((LevelPage) gameWorld.getPage(1)).setCurrentScore("Current Score: "+ gameWorld.getScore());
 	}
 	
 	/**
@@ -229,8 +230,8 @@ public class Collision {
 		double indicator = rn.nextDouble();
 		if (indicator <= 0.4){
 			Powerup newPowerup = new Powerup(indicator, brick);
-			gameWorld.getPowerups().add(newPowerup);
-			gameWorld.getRootLevel().getChildren().add(newPowerup.getPowerup());
+			((LevelPage) gameWorld.getPage(1)).getPowerups().add(newPowerup);
+			gameWorld.getPage(1).getRoot().getChildren().add(newPowerup.getPowerup());
 		}
 	}
 	
@@ -261,7 +262,7 @@ public class Collision {
 		}
 		for (Powerup powerup: powerups){
 			if (powerup.getRemovalMark()){
-				gameWorld.getRootLevel().getChildren().remove(powerup.getPowerup());
+				gameWorld.getPage(1).getRoot().getChildren().remove(powerup.getPowerup());
 				powerupsToBeRemoved.add(powerup);
 			}
 		}
@@ -296,7 +297,7 @@ public class Collision {
 	 */
 	private void increaseLife(int i) {
 		gameWorld.setLives(gameWorld.getLives() + i);
-		gameWorld.setRemainingLives("Remaining lives: " + gameWorld.getLives());
+		((LevelPage) gameWorld.getPage(1)).setRemainingLives("Remaining lives: " + gameWorld.getLives());
 	}
 
 	/**
@@ -304,7 +305,7 @@ public class Collision {
 	 * @param i: the duration of sticky effect (in second)
 	 */
 	private void stickyPaddle(int i) {
-		gameWorld.getPaddle().setSticky(true);
+		((LevelPage) gameWorld.getPage(1)).getPaddle().setSticky(true);
 	}
 
 	/**
@@ -312,14 +313,14 @@ public class Collision {
 	 * @param number: the number of balls out of each ball
 	 */
 	private void splitBall(int number) {
-		ArrayList<Ball> balls = gameWorld.getBalls();
+		ArrayList<Ball> balls = ((LevelPage) gameWorld.getPage(1)).getBalls();
 		for (Ball ball: balls){
 			for (int i = 1; i < number; i++){
 				Ball newBall = new Ball();
 				newBall.setX(ball.getMinX());
 				newBall.setY(ball.getMinY());
 				ballsToBeAdded.add(newBall);
-				gameWorld.getRootLevel().getChildren().add(newBall.getBall());
+				gameWorld.getPage(1).getRoot().getChildren().add(newBall.getBall());
 			}
 		}
 		balls.addAll(ballsToBeAdded);
@@ -330,7 +331,7 @@ public class Collision {
 	 * @param times: the times of ball speeding up
 	 */
 	private void speedUpBall(double times) {
-		ArrayList<Ball> balls = gameWorld.getBalls();
+		ArrayList<Ball> balls = ((LevelPage) gameWorld.getPage(1)).getBalls();
 		for (Ball ball: balls){
 			ball.setSpeed(times);
 		}
