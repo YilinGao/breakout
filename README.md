@@ -3,7 +3,7 @@
 -------------
 This program is coded with JavaFX, as a variant of the classic Breakout game. Because of limited time and the practicing purpose, the graphic user interface and function variations of the program are not as fancy as published games. But this program is able to accomplish its designed purposes.
 
--  Names of all people who worked on the project: Yilin Gao (yg95).
+- Names of all people who worked on the project: Yilin Gao (yg95).
 - Date to start: Jan 13. Date to finish: Jan 22. Estimated number of hours of work: 50 - 60 hours.
 - Since it is a personal project, I have taken up all roles during project development.
 - I referred a lot to JavaFX's online documentations, teacher's answers on Piazza, and many specific questions on Stack Overflow.
@@ -38,6 +38,10 @@ This program is coded with JavaFX, as a variant of the classic Breakout game. Be
 	- blue: add 1 life
 	- greed: split each ball into 3 balls
 
-- Known bugs, crashes, or problems: currently no.
-- Extra feature: there is a restart button on the result page. The player can press `SPACE` during game to pause and resume game.
+- Known bugs, crashes, or problems: when a ball hits exactly on the center edge of two adjacent bricks, both bricks will get hit. This is unavoidable under the current collision detection method. I regard it as inconsistency with reality rather than a bug.
+
+- Extra features: 
+    - there is a restart button on the result page.
+    - The player can press `SPACE` during game to pause and resume game.
+
 - My impression of the project: currently the project can fulfill its basic functions. Future improvement can focus on speed variation of the ball, to make it closer to reality. For example, when the ball hits on the paddle in different directions, its speed can change accordingly. And mouse control can be added into the game, along with keyboard control. 
