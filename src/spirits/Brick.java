@@ -5,9 +5,9 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 /**
- * the class to implement bricks in the game,
- * a wrapper of the ImageView class,
- * depends on breakout.GameWorld
+ * Class to implement bricks in the game.
+ * A wrapper of the ImageView class.
+ * Depends on breakout.GameWorld.
  * @author Yilin Gao
  *
  */
@@ -26,7 +26,7 @@ public class Brick {
 	private static final String BRICK3_IMAGE = "brick9.gif";
 	
 	/**
-	 * constructor for the Brick class
+	 * Constructor for the Brick class.
 	 * @param rn: the random number indicating the type of the Brick
 	 * @param l: the current layer (starting from 0)
 	 * @param i: the index in the layer (starting from 0)
@@ -102,7 +102,7 @@ public class Brick {
 	}
 	
 	/**
-	 * actions to perform when a brick is hit by a ball
+	 * Define actions to do when a brick is hit by a ball.
 	 * @return type of this brick
 	 */
 	public int hitBrick(){
@@ -123,7 +123,7 @@ public class Brick {
 	}
 	
 	/**
-	 * used in level 3 to move bricks
+	 * Define brick movements in level 3.
 	 * @param elapsedTime
 	 */
 	public void brickMove(double elapsedTime){

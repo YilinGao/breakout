@@ -6,10 +6,10 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 /**
- * the class to implement balls in the game,
- * a wrapper of the ImageView class,
- * depends on spirits.Paddle
- * @author ygao
+ * The class to implement balls in the game.
+ * A wrapper of the ImageView class.
+ * Depends on spirits.Paddle.
+ * @author Yilin Gao
  *
  */
 public class Ball {
@@ -22,7 +22,7 @@ public class Ball {
 	private ImageView ball;
 	
 	/**
-	 * the constructor of the class Ball
+	 * Constructor of the class Ball.
 	 */
 	public Ball(){
 		Image image = new Image(getClass().getClassLoader().getResourceAsStream(BALL_IMAGE));
@@ -99,7 +99,7 @@ public class Ball {
 	}
 
 	/**
-	 * the ball moves with the paddle
+	 * Define actions to do when the ball moves with the paddle.
 	 * @param paddle
 	 */
 	public void ballMoveWithPaddle(Paddle paddle){
@@ -109,7 +109,7 @@ public class Ball {
 	}
 	
 	/** 
-	 * set up the movement of the ball
+	 * Define movement for Ball.
 	 * @param elapsedTime
 	 */
 	public void ballMove(double elapsedTime){
@@ -118,14 +118,14 @@ public class Ball {
 	}
 	
 	/**
-	 * set up the horizontal bounce of the ball
+	 * Define horizontal bounce of Ball.
 	 */
 	public void ballBounceHorizontal(){
 		ballSpeedHorizontal *= -1;
 	}
 	
 	/**
-	 * set up the vertical bounce of the ball
+	 * Define vertical bounce of Ball.
 	 */
 	public void ballBounceVertical(){
 		ballSpeedVertical *= -1;

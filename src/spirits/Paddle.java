@@ -5,9 +5,9 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 /**
- * the class to implement paddle in the game,
- * a wrapper of the ImageView class,
- * depends on breakout.GameWorld
+ * Class to implement paddle in the game.
+ * Wrapper of the ImageView class.
+ * Depends on breakout.GameWorld.
  * @author Yilin Gao
  *
  */
@@ -18,7 +18,7 @@ public class Paddle {
 	private ImageView paddle;
 	
 	/**
-	 * constructor of the Paddle class
+	 * Constructor of the Paddle class.
 	 */
 	public Paddle(){
 		Image image = new Image(getClass().getClassLoader().getResourceAsStream(PADDLE_IMAGE));
@@ -74,7 +74,7 @@ public class Paddle {
 	}
 	
 	/**
-	 * perform the movement of the paddle
+	 * Define the movement of Paddle.
 	 * @param direction, 1 indicating right, -1 indicating left
 	 * @param elapsedTime
 	 */

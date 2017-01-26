@@ -10,6 +10,12 @@ import spirits.Brick;
 import spirits.Paddle;
 import spirits.Powerup;
 
+/**
+ * Controlling actions in each frame of game loop. 
+ * Depends on breakout.GameWorld, spirits.Ball, spirits.Paddle, spirits.Brick, spirtis.powerup.
+ * @author Yilin Gao
+ *
+ */
 public class GameWorldController {
 	private GameWorld gameWorld;	
 	private Collision collisionDetector;
@@ -19,6 +25,10 @@ public class GameWorldController {
 	private ArrayList<Brick> bricks;
 	private long numOfStickyFrames = 0;
 	
+	/**
+	 * Constructor of the GameWorldController class.
+	 * @param theGameWorld: a GameWorld variable
+	 */
 	public GameWorldController(GameWorld theGameWorld){
 		gameWorld = theGameWorld;
 		collisionDetector = new Collision(gameWorld);
@@ -29,7 +39,7 @@ public class GameWorldController {
 	}
 
 	/**
-	 * animations of nodes on the scene during one frame, check level end and move to the next level
+	 * Animations of nodes on the scene during one frame, check level end and move to the next level.
 	 * @param elapsedTime: the duration of each frame
 	 */
 	void actionsPerFrame(double elapsedTime){		
@@ -66,7 +76,7 @@ public class GameWorldController {
 	}
 
 	/**
-	 * handle key events in each frame
+	 * Handle key events in each frame.
 	 * @param code: KeyEvent's KeyCode
 	 * @param elapsedTime: the duration of each frame
 	 */
@@ -88,8 +98,8 @@ public class GameWorldController {
 	}
 
 	/**
-	 * call isLifeEnd() to test if during this frame, the current life is dead,
-	 * if so, call actionsLifeEnd() to do relevant actions
+	 * Call isLifeEnd() to test if during this frame, the current life is dead.
+	 * If so, call actionsLifeEnd() to do relevant actions.
 	 */
 	private void lifeEnd() {
 		if (isLifeEnd()){
@@ -98,7 +108,7 @@ public class GameWorldController {
 	}
 
 	/**
-	 * test if the current life is dead
+	 * Test if the current life is dead.
 	 * @return true or false
 	 */
 	private boolean isLifeEnd() {
@@ -106,7 +116,7 @@ public class GameWorldController {
 	}
 	
 	/**
-	 * actions to perform when the current life is dead
+	 * Actions to perform when the current life is dead.
 	 */
 	private void actionsLifeEnd(){
 		gameWorld.setLives(gameWorld.getLives() - 1);
@@ -123,8 +133,8 @@ public class GameWorldController {
 	}
 
 	/**
-	 * call isLevelEnd() to test if during this frame, the current level has finished,
-	 * if so, call actionsLevelEnd() to do relevant actions
+	 * Call isLevelEnd() to test if during this frame, the current level has finished.
+	 * If so, call actionsLevelEnd() to do relevant actions.
 	 */
 	private void levelEnd() {
 		if (isLevelEnd()){
@@ -133,7 +143,7 @@ public class GameWorldController {
 	}
 	
 	/**
-	 * test if the current level has finished
+	 * Test if the current level has finished.
 	 * @return true or false
 	 */
 	private boolean isLevelEnd(){
@@ -141,7 +151,7 @@ public class GameWorldController {
 	}
 	
 	/**
-	 * actions to perform when the current level has finished
+	 * Actions to perform when the current level has finished.
 	 */
 	private void actionsLevelEnd() {
 		if (gameWorld.getLevel() < 3){
@@ -155,7 +165,7 @@ public class GameWorldController {
 	}
 
 	/**
-	 * test if the player is dead
+	 * Test if the player is dead.
 	 * @return true or false
 	 */
 	public boolean isDead(){

@@ -6,9 +6,9 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 /**
- * the class to implement powerups in the game,
- * a wrapper for the class ImageView,
- * depends on spirits.Brick
+ * Class to implement power-ups in the game.
+ * Wrapper for the class ImageView.
+ * Depends on spirits.Brick
  * @author Yilin Gao
  *
  */
@@ -25,9 +25,9 @@ public class Powerup {
 	private boolean toBeRemoved = false;
 	
 	/**
-	 * constructor of the class Powerup
+	 * Constructor of the class Powerup.
 	 * @param theType: the random number generated in GameWorld to determine the powerup's type
-	 * @param brick: the brick which was hit and generates this powerup
+	 * @param brick: the brick which was hit and generates this power-up
 	 */
 	public Powerup(double theType, Brick brick){
 		String path = POWERUP_IMAGE1;
@@ -96,7 +96,7 @@ public class Powerup {
 	}
 	
 	/**
-	 * set up the movement of the powerup
+	 * Define movement of Powerup.
 	 * @param elapsedTime
 	 */
 	public void powerupMove(double elapsedTime){

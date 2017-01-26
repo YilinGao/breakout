@@ -8,6 +8,12 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+/**
+ * A sub class of the class Page.
+ * Implement the welcome Scene.
+ * @author Yilin Gao
+ *
+ */
 public class WelcomePage extends Page {
 	
 	private Button start;
@@ -15,6 +21,11 @@ public class WelcomePage extends Page {
 	private Text instructions;
 	private Text tips;
 	
+	/**
+	 * Constructor of the WelcomePage class.
+	 * @param theStage
+	 * @param theGameWorld
+	 */
 	public WelcomePage(Stage theStage, GameWorld theGameWorld){
 		super(theStage, theGameWorld);
 	}
@@ -29,25 +40,25 @@ public class WelcomePage extends Page {
 		start.setLayoutY(400);
 		start.setOnMouseReleased(e -> handleMouseInput(e));
 		start.setOnKeyReleased(e -> handleKeyInput(e));
-		root.getChildren().add(gameTitle);
-		root.getChildren().add(instructions);
-		root.getChildren().add(tips);
-		root.getChildren().add(start);
-		stage.setScene(scene);
-		stage.setTitle(GameWorld.TITLE);
-		stage.show();
+		this.getRoot().getChildren().add(gameTitle);
+		this.getRoot().getChildren().add(instructions);
+		this.getRoot().getChildren().add(tips);
+		this.getRoot().getChildren().add(start);
+		this.getStage().setScene(this.getScene());
+		this.getStage().setTitle(GameWorld.TITLE);
+		this.getStage().show();
 	}
 
 	@Override
 	protected void handleKeyInput(KeyEvent event) {
 		if (event.getCode() == KeyCode.SPACE) {
-			gameWorld.initializeLevel(1);
+			this.getGameWorld().initializeLevel(1);
 		}		
 	}
 
 	@Override
 	protected void handleMouseInput(MouseEvent event) {
-		gameWorld.initializeLevel(1);
+		this.getGameWorld().initializeLevel(1);
 	}
 
 }

@@ -15,12 +15,12 @@ import pages.Page;
 import pages.ResultPage;
 import pages.WelcomePage;
 
-//This entire file is part of my masterpiece.
+//This entire file is my masterpiece.
 //Yilin Gao
 
 /**
- * the controller of the program, running game loops, managing items on each scene,
- * depends on collisions.Collision, spirits.Ball, spirits.Brick, spirits.Paddle, spirits.Powerup
+ * The top level class of the program, managing pages, running game loops.
+ * Depends on breakout.GameWorldController, collisions.Collision, pages.Page, pages.WelcomePage, pages.LevelPage, pages.ResultPage.
  * @author Yilin Gao
  *
  */
@@ -48,9 +48,7 @@ public class GameWorld {
 	public static final String levelThreeInput = "level3.txt";
 
 	/**
-	 * constructor of the class GameWorld
-	 * @param fps: number of frames per second
-	 * @param t: title of the stage
+	 * Constructor of the class GameWorld.
 	 */
 	public GameWorld() {
 		millisecondDelay = 1000.0 / framesPerSecond;
@@ -91,7 +89,7 @@ public class GameWorld {
 	
 
 	/**
-	 * Build up stage, scene, and nodes in the scene
+	 * Initialize a welcome page.
 	 * @param stage: primaryStage in Application's start() method
 	 */
 	public void initializeWelcome(Stage stage){
@@ -104,7 +102,7 @@ public class GameWorld {
 	}
 	
 	/**
-	 * initialize a certain level scene
+	 * Initialize a certain level page.
 	 * @param targetLevel: the level to be initialized
 	 */
 	public void initializeLevel(int targetLevel){
@@ -117,7 +115,7 @@ public class GameWorld {
 	}
 
 	/**
-	 * initialize the result scene
+	 * Initialize a result scene.
 	 */
 	public void initializeResultPage(){
 		Page resultPage = new ResultPage(theStage, this);
@@ -128,8 +126,8 @@ public class GameWorld {
 	}
 	
 	/**
-	 * set up game loop (time line),
-	 * call actionsPerFrame(double elapsedTime) to handle animations of nodes during each frame
+	 * Set up game loop (time line).
+	 * call actionsPerFrame(double elapsedTime) in breakout.GameWorldController to handle animations of nodes during each frame.
 	 */
 	public void buildAndSetGameLoop(){
 		gameWorldController = new GameWorldController(this);
@@ -148,14 +146,14 @@ public class GameWorld {
 	}
 	
 	/**
-	 * begin game loop (time line)
+	 * Begin game loop (time line).
 	 */
 	public void beginGameLoop(){
 		timeline.play();
 	}
 	
 	/**
-	 * stop game loop (time line)
+	 * Stop game loop (time line).
 	 */
 	public void stopGameLoop(){
 		timeline.stop();

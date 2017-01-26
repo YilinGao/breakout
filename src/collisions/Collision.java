@@ -11,8 +11,8 @@ import spirits.Paddle;
 import spirits.Powerup;
 
 /**
- * dealing with all possible kinds of collisions between items,
- * depends on breakout.Breakout, spirits.Ball, spirits.Brick, spirits.Paddle, spirits.Powerup
+ * Deal with all possible kinds of collisions between items.
+ * Depends on breakout.Breakout, spirits.Ball, spirits.Brick, spirits.Paddle, spirits.Powerup.
  * @author Yilin Gao
  *
  */
@@ -25,16 +25,16 @@ public class Collision {
 	private ArrayList<Powerup> powerupsToBeRemoved = new ArrayList<>();
 	
 	/**
-	 * constructor of Collision class
-	 * @param originalGameWorld: the GameWorld instant
+	 * Constructor of Collision class.
+	 * @param originalGameWorld: a GameWorld variable
 	 */
 	public Collision(GameWorld theGameWorld){
 		gameWorld = theGameWorld;
 	}
 	
 	/**
-	 * test if any ball hits the paddle,
-	 * actions to do when a ball hits the paddle
+	 * Test if any ball hits the paddle.
+	 * Call other methods to do actions when a ball hits the paddle.
 	 * @param balls: all balls in the game
 	 * @param paddle: the paddle in the game
 	 */
@@ -67,7 +67,7 @@ public class Collision {
 	}
 
 	/**
-	 * the actual actions when the ball bounces on the paddle
+	 * Actual actions when the ball bounces on the paddle.
 	 * @param paddle
 	 * @param ball
 	 * @param indicator: to indicate to bounce horizontally or vertically
@@ -86,8 +86,8 @@ public class Collision {
 	}
 	
 	/**
-	 * test if any ball hits walls,
-	 * actions to do when a ball hits walls
+	 * Test if any ball hits walls.
+	 * Call other methods to do actions when a ball hits walls.
 	 * @param balls: all balls in the game
 	 */
 	public void ballBounceOnWalls(ArrayList<Ball> balls){
@@ -104,8 +104,8 @@ public class Collision {
 	}
 	
 	/**
-	 * test if any ball falls down,
-	 * actions to do when a ball falls down
+	 * Test if any ball falls down.
+	 * Call other methods to do actions a ball falls down.
 	 * @param balls: all balls in the game
 	 */
 	public void ballFallDown(ArrayList<Ball> balls){
@@ -124,8 +124,8 @@ public class Collision {
 	}	
 
 	/**
-	 * test if any ball hits any brick,
-	 * remove bricks hit
+	 * Call other methods to test if any ball hits any brick.
+	 * Remove hit bricks from the game.
 	 * @param balls: all balls in the game
 	 * @param bricks: all bricks in the game
 	 */
@@ -146,8 +146,8 @@ public class Collision {
 	}	
 	
 	/**
-	 * test if one ball hits one brick,
-	 * actions to do when the ball hits the brick
+	 * Test if one ball hits one brick.
+	 * Define actions to do when the ball hits the brick.
 	 * @param ball: the tested ball
 	 * @param brick: the tested brick
 	 */
@@ -187,7 +187,7 @@ public class Collision {
 	}
 
 	/**
-	 * check if this is the first hit between the ball and the brick in this frame
+	 * Check if this is the first hit between the ball and the brick in this frame.
 	 * @param brick
 	 * @param hit
 	 * @return
@@ -203,7 +203,7 @@ public class Collision {
 	}
 	
 	/**
-	 * increase score when a brick is hit
+	 * Increase score when a brick is hit.
 	 * @param type: type of the hit brick
 	 */
 	private void increaseScore(int type){
@@ -222,7 +222,7 @@ public class Collision {
 	}
 	
 	/**
-	 * determine if a powerup will drop up when a brick is hit
+	 * Check if a power-up will drop up when a brick is hit.
 	 * @param brick: the hit brick
 	 */
 	private void dropPowerup(Brick brick){
@@ -236,9 +236,9 @@ public class Collision {
 	}
 	
 	/**
-	 * test if any powerup hits the paddle,
-	 * actions to do when a powerup hits the paddle
-	 * @param powerups: all powerups in the game
+	 * Test if any power-up hits the paddle.
+	 * Call other methods to do actions when a power-up hits the paddle.
+	 * @param powerups: all power-ups in the game
 	 * @param paddle: the paddle in the game
 	 */
 	public void powerupHitPaddle(ArrayList<Powerup> powerups, Paddle paddle) {
@@ -270,8 +270,8 @@ public class Collision {
 	}
 	
 	/**
-	 * the effect when a powerup hits the paddle
-	 * @param powerup: the powerup
+	 * Define the effect when a power-up hits the paddle.
+	 * @param powerup: the power-up
 	 */
 	private void powerupEffect(Powerup powerup) {
 		powerup.setRemovalMark();
@@ -292,7 +292,7 @@ public class Collision {
 	}
 
 	/**
-	 * powerup effect 4: increase 1 life
+	 * Power-up effect 4: increase 1 life.
 	 * @param i: the increased number of lives
 	 */
 	private void increaseLife(int i) {
@@ -301,7 +301,7 @@ public class Collision {
 	}
 
 	/**
-	 * powerup effect 3: make the paddle sticky
+	 * Power-up effect 3: make the paddle sticky.
 	 * @param i: the duration of sticky effect (in second)
 	 */
 	private void stickyPaddle(int i) {
@@ -309,7 +309,7 @@ public class Collision {
 	}
 
 	/**
-	 * powerup effect 2: split each ball into several balls
+	 * Power-up effect 2: split each ball into several balls.
 	 * @param number: the number of balls out of each ball
 	 */
 	private void splitBall(int number) {
@@ -327,7 +327,7 @@ public class Collision {
 	}
 
 	/**
-	 * powerup effect 1: speed the ball up by certain times
+	 * Power-up effect 1: speed the ball up by certain times.
 	 * @param times: the times of ball speeding up
 	 */
 	private void speedUpBall(double times) {

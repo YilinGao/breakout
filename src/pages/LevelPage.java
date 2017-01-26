@@ -15,6 +15,13 @@ import spirits.Brick;
 import spirits.Paddle;
 import spirits.Powerup;
 
+/**
+ * A subclass of the class Page.
+ * Implement Scene for each level.
+ * Depends on spirits.Ball, spirits.Brick, spirits.Paddle, spirits.Powerup.
+ * @author Yilin Gao
+ *
+ */
 public class LevelPage extends Page {
 	
 	private Text remainingLives;
@@ -30,6 +37,11 @@ public class LevelPage extends Page {
 	private boolean started = false;
 	private boolean paused = false;
 	
+	/**
+	 * Constructor of the LevelPage class.
+	 * @param theStage
+	 * @param theGameWorld
+	 */
 	public LevelPage(Stage theStage, GameWorld theGameWorld){
 		super(theStage, theGameWorld);
 	}
@@ -73,10 +85,10 @@ public class LevelPage extends Page {
 		setupMovableItems();
 		setupBricks();
 		addNodesToRoot();		
-		stage.setScene(scene);
-		scene.setOnKeyReleased(e -> handleKeyInput(e));
-		gameWorld.buildAndSetGameLoop();
-		gameWorld.beginGameLoop();
+		this.getStage().setScene(this.getScene());
+		this.getScene().setOnKeyReleased(e -> handleKeyInput(e));
+		this.getGameWorld().buildAndSetGameLoop();
+		this.getGameWorld().beginGameLoop();
 	}
 
 	@Override
@@ -88,9 +100,9 @@ public class LevelPage extends Page {
 				paused = ! paused;
 		}
 		else if (event.getCode() == KeyCode.R){
-			gameWorld.stopGameLoop();
-			gameWorld.setScore(0);
-			gameWorld.initializeLevel(gameWorld.getLevel());
+			this.getGameWorld().stopGameLoop();
+			this.getGameWorld().setScore(0);
+			this.getGameWorld().initializeLevel(this.getGameWorld().getLevel());
 		}
 		else if (event.getCode() == KeyCode.B){
 			paddle.setX(GameWorld.WIDTH / 2 - paddle.getWidth() / 2); 
@@ -100,19 +112,19 @@ public class LevelPage extends Page {
 			}
 		}
 		else if (event.getCode() == KeyCode.DIGIT1){
-			gameWorld.stopGameLoop();
-			gameWorld.setScore(0);
-			gameWorld.initializeLevel(1);
+			this.getGameWorld().stopGameLoop();
+			this.getGameWorld().setScore(0);
+			this.getGameWorld().initializeLevel(1);
 		}
 		else if (event.getCode() == KeyCode.DIGIT2){
-			gameWorld.stopGameLoop();
-			gameWorld.setScore(0);
-			gameWorld.initializeLevel(2);
+			this.getGameWorld().stopGameLoop();
+			this.getGameWorld().setScore(0);
+			this.getGameWorld().initializeLevel(2);
 		}
 		else if (event.getCode() == KeyCode.DIGIT3){
-			gameWorld.stopGameLoop();
-			gameWorld.setScore(0);
-			gameWorld.initializeLevel(3);
+			this.getGameWorld().stopGameLoop();
+			this.getGameWorld().setScore(0);
+			this.getGameWorld().initializeLevel(3);
 		}
 	}
 
@@ -125,7 +137,7 @@ public class LevelPage extends Page {
 	 * read text file inputs as brick layouts
 	 */
 	private void chooseAndReadInput() {
-		switch (gameWorld.getLevel()) {
+		switch (this.getGameWorld().getLevel()) {
 		case 1:
 			readFileInput(GameWorld.levelOneInput, levelLayout);
 			break;
@@ -166,15 +178,15 @@ public class LevelPage extends Page {
 	 * set up status display: score, level, lives
 	 */
 	public void setupFixedItems(){
-		currentScore = new Text("Current Score: "+ gameWorld.getScore());
+		currentScore = new Text("Current Score: "+ this.getGameWorld().getScore());
 		currentScore.setX(30);
 		currentScore.setY(50);
 		
-		currentLevel = new Text("Level: " + gameWorld.getLevel());
+		currentLevel = new Text("Level: " + this.getGameWorld().getLevel());
 		currentLevel.setX(390 - currentLevel.getBoundsInLocal().getWidth());
 		currentLevel.setY(50);
 		
-		remainingLives = new Text("Remaining lives: " + gameWorld.getLives());
+		remainingLives = new Text("Remaining lives: " + this.getGameWorld().getLives());
 		remainingLives.setX(30);
 		remainingLives.setY(550);
 	}
@@ -226,17 +238,17 @@ public class LevelPage extends Page {
 	 * @param root: the root for the scene, a Group class variable
 	 */
 	public void addNodesToRoot(){
-		root.getChildren().clear();
+		this.getRoot().getChildren().clear();
 		for (Ball ball: balls){
-			root.getChildren().add(ball.getBall());
+			this.getRoot().getChildren().add(ball.getBall());
 		}
-		root.getChildren().add(paddle.getPaddle());	
+		this.getRoot().getChildren().add(paddle.getPaddle());	
 		for (Brick brick: bricks){
-			root.getChildren().add(brick.getBrick());
+			this.getRoot().getChildren().add(brick.getBrick());
 		}			
-		root.getChildren().add(currentScore);		
-		root.getChildren().add(currentLevel);		
-		root.getChildren().add(remainingLives);
+		this.getRoot().getChildren().add(currentScore);		
+		this.getRoot().getChildren().add(currentLevel);		
+		this.getRoot().getChildren().add(remainingLives);
 	}
 
 }
